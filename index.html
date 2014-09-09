@@ -2,9 +2,43 @@
 <html>
 <head>
   <title>Pi Mapper</title>
+  <style>
+    body {
+      background-color: #2118D4;
+      color: #ffffff;
+      height: 100%;
+    }
+
+    .wrapper {
+      text-align: center;
+      height: 100%;
+    }
+
+    .logo {
+      margin: 0 auto;
+      position: relative;
+      top: 50%;
+      -webkit-transform: translateY(-50%);
+      -ms-transform: translateY(-50%);
+      transform: translateY(-50%);
+    }
+
+    .logo img {
+      width: 50%;
+    }
+
+    @media (max-width: 560px) {
+      .logo img {
+        width: 90%;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>Pi Mapper</h1>
-  <p>The missing projection mapping tool.</p>
+  <div class="wrapper">
+    <div class="logo">
+      <img src="piMapperLogo.svg" alt="Pi Mapper">
+    </div>
+  </div>
 </body>
 </html>
