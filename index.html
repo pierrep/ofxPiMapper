@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Pi Mapper</title>
+  <script src="jquery.js"></script>
   <style>
     body {
       background-color: #2118D4;
@@ -16,14 +17,10 @@
 
     .logo {
       margin: 0 auto;
-      position: relative;
-      top: 50%;
-      -webkit-transform: translateY(-50%);
-      -ms-transform: translateY(-50%);
-      transform: translateY(-50%);
     }
 
     .logo img {
+      opacity: 0;
       width: 50%;
     }
 
@@ -40,5 +37,22 @@
       <img src="piMapperLogo.svg" alt="Pi Mapper">
     </div>
   </div>
+  <script>
+    var alignLogo = function() {
+      var logoHeight = $('.logo img').height();
+      var winHeight = $(window).height();
+      var margin = (winHeight - logoHeight) / 2;
+      $('.logo img').css('margin-top', margin);
+      $('.logo img').css('opacity', 1);
+    };
+
+    $(document).ready(function() {
+      setTimeout(alignLogo, 100);
+    });
+
+    $(window).resize(function() {
+      alignLogo();
+    });
+  </script>
 </body>
 </html>
