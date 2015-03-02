@@ -1,58 +1,191 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <title>Pi Mapper</title>
-  <style>
-    body {
-      background-color: #2118D4;
-      color: #ffffff;
-      height: 100%;
-    }
+	<head>
+		<meta charset="UTF-8">
+		<meta name="author" content="Irina Spicaka (http://irina.spicaka.info)">
+		
+		<title>PiMapper</title>
 
-    .wrapper {
-      text-align: center;
-      height: 100%;
-    }
+		<style type="text/css">
+		
+		body {
+			color: white;
+			background-color: #2118D4;
+			font-family: Open Sans, Helvetica;
+			margin: 0;
+			font-size: 18px;
+			padding: 0;
+			/*border: 40px solid #2118D4;*/ 
+			/* border: 20px dashed #ff88aa;
+			border: <line-width> || <line-style> || <color>;*/
+		}
 
-    .logo {
-      margin: 0 auto;
-    }
+		.lead-text {
+			padding-top: 15px;
+		}
 
-    .logo img {
-      opacity: 0;
-      width: 50%;
-    }
+		h1 {
+  			color: white;
+  			font-size: 3em; /*relative unit - three times bigger as body size*/
+		}
 
-    @media (max-width: 560px) {
-      .logo img {
-        width: 90%;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="wrapper">
-    <div class="logo">
-      <img src="piMapperLogo.svg" alt="Pi Mapper">
-    </div>
-  </div>
-  <script src="jquery.js"></script>
-  <script>
-    var alignLogo = function() {
-      var logoHeight = $('.logo img').height();
-      var winHeight = $(window).height();
-      var margin = (winHeight - logoHeight) / 2;
-      $('.logo img').css('margin-top', margin);
-      $('.logo img').css('opacity', 1);
-    };
+		h2 {
+			padding: 8px 15px 8px 15px;
+			background: url(bg-overlay-pattern.png);
+  			color: #2118D4;
+  			font-size: 1.6em; /*relative unit - three times bigger as body size*/
+		}
 
-    $(document).ready(function() {
-      setTimeout(alignLogo, 100);
-    });
+		h3 {
+			font-size: 18px;
+			font-weight: bold;
+			padding-top: 15px;
+		}
 
-    $(window).resize(function() {
-      alignLogo();
-    });
-  </script>
-</body>
+		footer {
+			background-color: white; /* 8BC6F7*/
+			height: 0px;
+			width: 100%;
+			font-color: white;
+			font-family: Open Sans, Helvetica;
+			font-size: 18px;
+		}
+
+		.logo {
+			background-image: url(pimapper-white-logo.svg);
+			background-position: center;
+			height: 168px;
+			width: 230px;
+			background-repeat: no-repeat;
+			margin: 0 auto 40px;
+			text-indent: -9876px;
+		}
+
+		@media (min-width: 360px) {
+			.logo {
+				height: 300px;
+  				width: 80%;
+			}
+		}
+
+		.logo-github {
+			background-image: url(github-mark+logo-white-with-bg.svg);
+			background-repeat: no-repeat;
+			height: 46px;
+			width: 148px;
+			/*border: 1px solid red;*/ /*var likt background*/
+			margin: 3px 0px 0px 3px;
+			display: inline-block;
+			vertical-align: top;
+			text-indent: -9876px;
+		}
+
+		.logo-github:hover {
+			background-image: url(github-mark+logo-white-bg.svg); /* jaraksta tikai tas lietas, kas ir atshkjirigas*/
+		}
+
+		/*.highlight {
+			background: white;
+			/*padding: 5px 15px 5px 15px;
+			color: #2118D4;
+			font-family: Open Sans, Helvetica;
+		}*/
+
+		.margin {
+			margin: 50px auto;
+			padding-left: 50px;
+			padding-right: 50px;
+			max-width: 700px;
+		}
+
+		.aligned {
+			text-align: left;
+			font-size: 0;
+		}
+
+		.aligned h3 {
+			background: url(bg-overlay-pattern.png);
+			margin: 3px 0 0 3px;
+			padding: 0;
+			height: 46px;
+			width: 148px;
+  			color: #2118D4;
+  			display: inline-block;
+  			text-align: center; /* Šis iecentrē tikai pa horizontāli */
+  			line-height: 46px; /* Ja šo uztaisa tādu pašu
+  				kā konteinera augstums (height), tad teksts
+  				iecentrējas pa vertikāli */
+		}
+
+		.author {
+			background: url(bg-overlay-pattern.png);
+			text-align: center;
+			line-height: 46px;
+			height: 46px;
+			width: 46px;
+			font-size: 14px;
+			font-weight: bold;
+			color: #2118D4;
+			margin: 3px 0 0 3px;
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		</style>
+	</head>
+	
+	<body>
+		<div class="margin">
+
+			<h1 class="logo">PiMapper</h1>
+
+			<h2>Open source projection mapping tool that runs on the Raspberry Pi</h2>
+
+			<p class="lead-text">Pi Mapper allows you to use less expensive hardware in order to help
+			you focus on the things that matter. It's perfect for different kind of
+			media installations where one has to leave a computer running 24/7.</p>
+		
+			<h3>With Pi Mapper you can:</h3>
+
+			<ul>
+				<li>Use the Raspberry Pi or any other computer</li>
+				<li>Map images, videos as well as generative content made in
+				openFrameworks</li>
+				<li>Have a separate media source for every mapping surface</li>
+			</ul>
+
+			<h3>You get:</h3>
+
+			<ul>
+				<li>Ability to use and adjust the ofxPiMapper source code to your
+				needs</li>
+				<li>Possibility to use less expensive embedded platforms</li>
+				<li>Safety as there is a difference between a failing machine in worth
+				of 1500 EUR and 100 EUR</li>
+			</ul>
+			<br>
+
+			<div class="aligned">
+				<h3>Available on</h3> 
+				<a class="logo-github" href="http://github.com/kr15h/ofxPiMapper" title="PiMapper repository on GitHub">GitHub</a>
+				<!--
+				<div class="author">
+					By:
+				</div>
+				<div class="author">
+					Kris
+				</div>
+				<div class="author">
+					Irina
+				</div>
+				-->
+			</div>
+
+		</div><!-- /.margin -->
+
+		<footer>
+		</footer>		
+
+	</body>
+
 </html>
