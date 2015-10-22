@@ -1,0 +1,15 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+    Krisjanis Rijnieks -- Main developer -- https://twitter.com/k_rijnieks
+    Irina Spicaka -- UX/UI Designer -- https://twitter.com/irina_spicaka
+
+# THANKS
+
+    GitHub
+
+# TECHNOLOGY COLOPHON
+
+    CSS3, HTML5
