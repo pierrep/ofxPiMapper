@@ -1,143 +1,136 @@
 <!DOCTYPE html>
 <html>
 <head>
-		<meta charset="UTF-8">
-		<meta name="author" content="Irina Spicaka (http://irina.spicaka.info)">
-		
-		<title>PiMapper</title>
+	<meta charset="UTF-8">
+	
+	<title>ofxPiMapper :: Projection Mapping with the Raspberry Pi</title>
+	<link rel="author" href="humans.txt">
 
-		<style type="text/css">
-		
-		body {
-			color: white;
-			background-color: #2118D4;
-			font-family: Open Sans, Helvetica;
-			margin: 0;
-			font-size: 18px;
-			padding: 0;
-			/*border: 40px solid #2118D4;*/ 
-			/* border: 20px dashed #ff88aa;
-			border: <line-width> || <line-style> || <color>;*/
+	<style type="text/css">
+	
+	body {
+		color: white;
+		background-color: #2118D4;
+		font-family: Open Sans, Helvetica;
+		margin: 0;
+		font-size: 18px;
+		padding: 0;
+	}
+
+	.lead-text {
+		padding-top: 15px;
+	}
+
+	h1.brand {
+		color: white;
+		font-size: 2em;
+		text-align: center;
+		padding-bottom: 20px;
+	}
+
+	h2 {
+		padding: 8px 15px 8px 15px;
+		background: url(bg-overlay-pattern.png);
+		color: #2118D4;
+		font-size: 1.6em;
+	}
+
+	h3 {
+		font-size: 18px;
+		font-weight: bold;
+		padding-top: 15px;
+	}
+
+	footer {
+		background-color: white; /* 8BC6F7*/
+		height: 0px;
+		width: 100%;
+		font-color: white;
+		font-family: Open Sans, Helvetica;
+		font-size: 18px;
+	}
+
+	img.logo {
+		background-position: center;
+		width: 300px;
+		height: auto;
+		margin: 0 auto 0 auto;
+	}
+
+	.logo-github {
+		background-image: url(github-mark+logo-white-with-bg.svg);
+		background-repeat: no-repeat;
+		height: 46px;
+		width: 148px;
+		/*border: 1px solid red;*/ /*var likt background*/
+		margin: 3px 0px 0px 3px;
+		display: inline-block;
+		vertical-align: top;
+		text-indent: -9876px;
+	}
+
+	.logo-github:hover {
+		background-image: url(github-mark+logo-white-bg.svg);
+	}
+
+	.margin {
+		margin: 50px auto;
+		padding-left: 50px;
+		padding-right: 50px;
+		max-width: 700px;
+	}
+
+	.aligned {
+		text-align: left;
+		font-size: 0;
+	}
+
+	.aligned h3 {
+		background: url(bg-overlay-pattern.png);
+		margin: 3px 0 0 3px;
+		padding: 0;
+		height: 46px;
+		width: 148px;
+		color: #2118D4;
+		display: inline-block;
+		text-align: center;
+		line-height: 46px;
+	}
+
+	.author {
+		background: url(bg-overlay-pattern.png);
+		text-align: center;
+		line-height: 46px;
+		height: 46px;
+		width: 46px;
+		font-size: 14px;
+		font-weight: bold;
+		color: #2118D4;
+		margin: 3px 0 0 3px;
+		display: inline-block;
+		vertical-align: top;
+	}
+
+	@media (min-width: 360px) {
+		img.logo {
+				width: 80%;
+				height: auto;
 		}
+	}
 
-		.lead-text {
-			padding-top: 15px;
-		}
-
-		h1 {
-  			color: white;
-  			font-size: 3em; /*relative unit - three times bigger as body size*/
-		}
-
-		h2 {
-			padding: 8px 15px 8px 15px;
-			background: url(bg-overlay-pattern.png);
-  			color: #2118D4;
-  			font-size: 1.6em; /*relative unit - three times bigger as body size*/
-		}
-
-		h3 {
-			font-size: 18px;
-			font-weight: bold;
-			padding-top: 15px;
-		}
-
-		footer {
-			background-color: white; /* 8BC6F7*/
-			height: 0px;
-			width: 100%;
-			font-color: white;
-			font-family: Open Sans, Helvetica;
-			font-size: 18px;
-		}
-
-		.logo {
-			background-image: url(pimapper-white-logo.svg);
-			background-position: center;
-			height: 168px;
-			width: 230px;
-			background-repeat: no-repeat;
-			margin: 0 auto 40px;
-			text-indent: -9876px;
-		}
-
-		@media (min-width: 360px) {
-			.logo {
-				height: 300px;
-  				width: 80%;
-			}
-		}
-
-		.logo-github {
-			background-image: url(github-mark+logo-white-with-bg.svg);
-			background-repeat: no-repeat;
-			height: 46px;
-			width: 148px;
-			/*border: 1px solid red;*/ /*var likt background*/
-			margin: 3px 0px 0px 3px;
-			display: inline-block;
-			vertical-align: top;
-			text-indent: -9876px;
-		}
-
-		.logo-github:hover {
-			background-image: url(github-mark+logo-white-bg.svg); /* jaraksta tikai tas lietas, kas ir atshkjirigas*/
-		}
-
-		/*.highlight {
-			background: white;
-			/*padding: 5px 15px 5px 15px;
-			color: #2118D4;
-			font-family: Open Sans, Helvetica;
-		}*/
-
-		.margin {
-			margin: 50px auto;
-			padding-left: 50px;
-			padding-right: 50px;
-			max-width: 700px;
-		}
-
-		.aligned {
-			text-align: left;
-			font-size: 0;
-		}
-
-		.aligned h3 {
-			background: url(bg-overlay-pattern.png);
-			margin: 3px 0 0 3px;
-			padding: 0;
-			height: 46px;
-			width: 148px;
-  			color: #2118D4;
-  			display: inline-block;
-  			text-align: center; /* Šis iecentrē tikai pa horizontāli */
-  			line-height: 46px; /* Ja šo uztaisa tādu pašu
-  				kā konteinera augstums (height), tad teksts
-  				iecentrējas pa vertikāli */
-		}
-
-		.author {
-			background: url(bg-overlay-pattern.png);
-			text-align: center;
-			line-height: 46px;
-			height: 46px;
-			width: 46px;
-			font-size: 14px;
-			font-weight: bold;
-			color: #2118D4;
-			margin: 3px 0 0 3px;
-			display: inline-block;
-			vertical-align: top;
-		}
-
-		</style>
-	</head>
+	</style>
+</head>
 	
 <body>
 	<div class="margin">
 
-		<h1 class="logo">PiMapper</h1>
+		<h1 class="brand">
+			<img 
+				class="logo" 
+				src="./ofxpimapper-logo.png" 
+				alt="ofxPiMapper Logo">
+			ofxPiMapper
+		</h1>
 
 		<h2>Open source projection mapping tool that runs on the Raspberry Pi</h2>
 
@@ -167,18 +160,7 @@
 
 		<div class="aligned">
 			<h3>Available on</h3> 
-			<a class="logo-github" href="http://github.com/kr15h/ofxPiMapper" title="PiMapper repository on GitHub">GitHub</a>
-			<!--
-			<div class="author">
-				By:
-			</div>
-			<div class="author">
-				Kris
-			</div>
-			<div class="author">
-				Irina
-			</div>
-			-->
+			<a class="logo-github" href="http://github.com/kr15h/ofxPiMapper" title="ofxPiMapper repository on GitHub">GitHub</a>
 		</div>
 
 	</div><!-- /.margin -->
