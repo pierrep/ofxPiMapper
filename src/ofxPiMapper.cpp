@@ -119,3 +119,7 @@ ofx::piMapper::MediaServer & ofxPiMapper::getMediaServer() {
 ofx::piMapper::SurfaceManager & ofxPiMapper::getSurfaceManager() {
     return surfaceManager;
 }
+
+ofx::piMapper::ProjectionEditor * ofxPiMapper::getProjectionEditor() {
+    return gui.getProjectionEditor();
+}

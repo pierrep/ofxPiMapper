@@ -50,6 +50,8 @@ namespace ofx {
                 
             } else if (oscMessage.getAddress() == "/selectNext/"){
             
+                int selectableSurfaceIndex = 0;
+            
                 // Check if there is a surface selected
                 if (app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) {
                     // If yes, select next surface
@@ -58,28 +60,20 @@ namespace ofx {
                         app->getOfxPiMapper()->getSurfaceManager().size() - 1) {
                         // If last surface is selected
                         // Jump to first surface
-                        app->getOfxPiMapper()->getSurfaceManager().selectSurface(0);
+                        selectableSurfaceIndex = 0;
                     } else {
                         // Else select next surface
-                        app->getOfxPiMapper()->getSurfaceManager().selectSurface(
+                        selectableSurfaceIndex =
                             app->getOfxPiMapper()->getSurfaceManager().getSurfaceIndex(
-                                app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) + 1);
-                    }
-                } else {
-                    // If not, select first surface
-                    if (app->getOfxPiMapper()->getSurfaceManager().size()) {
-                        app->getOfxPiMapper()->getSurfaceManager().selectSurface(0);
+                                app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) + 1;
                     }
                 }
                 
-                /*
-                if (surfaceManager->getSelectedSurface() != surfaceManager->getSurface(i)){
-                    _cmdManager->exec(new SelSurfaceCmd(
-                        surfaceManager,
-                        surfaceManager->getSurface(i),
-                        &projectionEditor));
-                }
-                */
+                app->getOfxPiMapper()->getCmdManager().exec(new SelSurfaceCmd(
+                    &app->getOfxPiMapper()->getSurfaceManager(),
+                    app->getOfxPiMapper()->getSurfaceManager().getSurface(selectableSurfaceIndex),
+                    app->getOfxPiMapper()->getProjectionEditor()));
+                
             } else if (oscMessage.getAddress() == "/selectPrev/"){
                 
             }

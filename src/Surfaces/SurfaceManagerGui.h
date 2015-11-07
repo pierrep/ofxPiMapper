@@ -35,9 +35,10 @@ namespace ofx {
             void setSurfaceManager(SurfaceManager* newSurfaceManager);
             void setMediaServer(MediaServer* newMediaServer);
             void setCmdManager(CmdManager * cmdManager);
-            
             void setMode(int newGuiMode);
             int getMode();
+            ProjectionEditor * getProjectionEditor();
+            
             void drawSelectedSurfaceHighlight();
             void drawSelectedSurfaceTextureHighlight();
             void startDrag();
