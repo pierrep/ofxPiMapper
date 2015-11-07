@@ -4,6 +4,7 @@
 #include "ofLog.h"
 
 #include "ofxPiMapper.h"
+#include "ofxOsc.h"
 
 #include "SetApplicationStateCmd.h"
 
@@ -33,7 +34,7 @@ namespace ofx {
             
                 void draw();
                 void onKeyPressed(ofKeyEventArgs & args);
-            
+                            
             protected:
                 void setState(ApplicationBaseState * st);
             
@@ -43,6 +44,7 @@ namespace ofx {
             
                 ApplicationBaseState * _state;
                 ofxPiMapper * _ofxPiMapper;
+                ofxOscReceiver * _oscReceiver;
         };
         
     } // namespace piMapper
