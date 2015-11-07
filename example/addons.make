@@ -3,3 +3,4 @@ ofxIO
 ofxXmlSettings
 ofxGui
 ofxOMXPlayer
+ofxOsc
