@@ -76,6 +76,29 @@ namespace ofx {
                 
             } else if (oscMessage.getAddress() == "/selectPrev/"){
                 
+                int selectableSurfaceIndex = 0;
+            
+                // Check if there is a surface selected
+                if (app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) {
+                    // If yes, select previous surface
+                    if (app->getOfxPiMapper()->getSurfaceManager().getSurfaceIndex(
+                        app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) == 0) {
+                        // If first surface is selected
+                        // Jump to last surface
+                        selectableSurfaceIndex = app->getOfxPiMapper()->getSurfaceManager().size() - 1;
+                    } else {
+                        // Else select previous surface
+                        selectableSurfaceIndex =
+                            app->getOfxPiMapper()->getSurfaceManager().getSurfaceIndex(
+                                app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) - 1;
+                    }
+                }
+                
+                app->getOfxPiMapper()->getCmdManager().exec(new SelSurfaceCmd(
+                    &app->getOfxPiMapper()->getSurfaceManager(),
+                    app->getOfxPiMapper()->getSurfaceManager().getSurface(selectableSurfaceIndex),
+                    app->getOfxPiMapper()->getProjectionEditor()));
+                
             }
         }
     }
