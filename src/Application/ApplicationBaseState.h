@@ -16,7 +16,7 @@ namespace ofx {
             
                 // Event handler virtual methods
                 virtual void onKeyPressed(Application * app, ofKeyEventArgs & args){};
-                virtual void onOscMessage(ofxOscMessage & oscMessage){};
+                virtual void onOscMessage(Application * app, ofxOscMessage & oscMessage){};
         };
         
     } // namespace piMapper

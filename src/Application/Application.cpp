@@ -133,7 +133,7 @@ namespace ofx {
                 }
             
                 // Handle everything else by the current state
-                _state->onOscMessage(oscMessage);
+                _state->onOscMessage(this, oscMessage);
             }
             
         }

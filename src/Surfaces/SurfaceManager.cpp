@@ -410,15 +410,27 @@ void SurfaceManager::deselectSurface() {
   selectedSurface = NULL;
 }
 
-BaseSurface* SurfaceManager::getSurface(int index) {
-  if (index >= surfaces.size()) {
-    throw std::runtime_error("Surface index out of bounds.");
-    return NULL;
-  }
+        BaseSurface* SurfaceManager::getSurface(int index){
+            if (index >= surfaces.size()) {
+                throw std::runtime_error("Surface index out of bounds.");
+                return NULL;
+            }
+            return surfaces[index];
+        }
 
-  return surfaces[index];
-}
+        int SurfaceManager::size(){
+            return surfaces.size();
+        }
+    
+        int SurfaceManager::getSurfaceIndex(ofx::piMapper::BaseSurface * surface){
+            for (int i=0; i<surfaces.size(); i++) {
+                if (surfaces[i] == surface) {
+                    return i;
+                }
+            }
+            throw std::runtime_error("Surface not found.");
+            return -1;
+        }
 
-int SurfaceManager::size() { return surfaces.size(); }
-}
+    }
 }

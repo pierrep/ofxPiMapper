@@ -15,7 +15,7 @@ namespace ofx {
                 static ProjectionMappingState * instance();
                 void draw(Application * app);
                 void onKeyPressed(Application * app, ofKeyEventArgs & args);
-                void onOscMessage(ofxOscMessage & oscMessage);
+                void onOscMessage(Application * app, ofxOscMessage & oscMessage);
             
             private:
                 static ProjectionMappingState * _instance;
