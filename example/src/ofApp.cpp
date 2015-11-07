@@ -17,6 +17,10 @@ void ofApp::setup() {
     // piMapper.showInfo();
 }
 
+void ofApp::update(){
+    piMapper.update();
+}
+
 void ofApp::draw() {
     piMapper.draw();
 }
