@@ -108,6 +108,34 @@ namespace ofx {
             if (oscMessage.getNumArgs()){
                 ofLogNotice("value") << oscMessage.getArgAsFloat(0);
             }
+            
+            // Handle global calls like `save` and `undo`
+            if (oscMessage.getAddress() == "/undo/"){
+                ofLogNotice("Application::onOscMessage") << "undo";
+                _ofxPiMapper->getCmdManager().undo();
+            } else if (oscMessage.getAddress() == "/save/"){
+                ofLogNotice("Application::onOscMessage") << "save";
+                _ofxPiMapper->getSurfaceManager().saveXmlSettings(
+                    PIMAPPER_USER_SURFACES_XML_FILE);
+            } else if (oscMessage.getAddress() == "/presentation/"){
+                ofLogNotice("Application::onOscMessage") << "presentation mode";
+                _ofxPiMapper->getCmdManager().exec(
+                    new ofx::piMapper::SetApplicationStateCmd(
+                        this, PresentationState::instance(),
+                        &_ofxPiMapper->getGui(), GuiMode::NONE));
+            } else {
+                // For everyting else we need to switch to projection mapping mode
+                if (getState() != ProjectionMappingState::instance()){
+                    _ofxPiMapper->getCmdManager().exec(
+                        new ofx::piMapper::SetApplicationStateCmd(
+                            this, ProjectionMappingState::instance(),
+                            &_ofxPiMapper->getGui(), GuiMode::PROJECTION_MAPPING));
+                }
+            
+                // Handle everything else by the current state
+                _state->onOscMessage(oscMessage);
+            }
+            
         }
 
         void Application::setState(ApplicationBaseState * st){

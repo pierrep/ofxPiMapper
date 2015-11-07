@@ -2,6 +2,7 @@
 
 #include "ofEvents.h"
 #include "ofLog.h"
+#include "ofxOscMessage.h"
 
 namespace ofx {
     namespace piMapper {
@@ -15,6 +16,7 @@ namespace ofx {
             
                 // Event handler virtual methods
                 virtual void onKeyPressed(Application * app, ofKeyEventArgs & args){};
+                virtual void onOscMessage(ofxOscMessage & oscMessage){};
         };
         
     } // namespace piMapper

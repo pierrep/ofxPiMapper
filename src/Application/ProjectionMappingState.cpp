@@ -42,5 +42,17 @@ namespace ofx {
                     break;
             }
         }
+        
+        void ProjectionMappingState::onOscMessage(ofxOscMessage & oscMessage){
+            if (oscMessage.getAddress() == "/moveSelected/x"){
+                
+            } else if (oscMessage.getAddress() == "/moveSelected/y"){
+                
+            } else if (oscMessage.getAddress() == "/selectNext/"){
+                
+            } else if (oscMessage.getAddress() == "/selectPrev/"){
+                
+            }
+        }
     }
 }
