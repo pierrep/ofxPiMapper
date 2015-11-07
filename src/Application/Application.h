@@ -32,8 +32,10 @@ namespace ofx {
                 ApplicationBaseState * getState();
                 ofxPiMapper * getOfxPiMapper(); // Temporary method.
             
+                void update();
                 void draw();
                 void onKeyPressed(ofKeyEventArgs & args);
+                void onOscMessage(ofxOscMessage & oscMessage);
                             
             protected:
                 void setState(ApplicationBaseState * st);

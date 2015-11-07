@@ -26,6 +26,10 @@ void ofxPiMapper::setup() {
     _application = new ofx::piMapper::Application(this);
 }
 
+void ofxPiMapper::update(){
+    _application->update();
+}
+
 void ofxPiMapper::draw() {
     if (!isSetUp) {
         return;

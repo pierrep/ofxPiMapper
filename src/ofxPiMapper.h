@@ -24,6 +24,7 @@ class ofxPiMapper {
         ofxPiMapper();
         
         void setup();
+        void update();
         void draw();
         void registerFboSource(ofx::piMapper::FboSource & fboSource);
         void addTriangleSurface();

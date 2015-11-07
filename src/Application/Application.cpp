@@ -8,12 +8,17 @@ namespace ofx {
             _ofxPiMapper = opm;
             setState(PresentationState::instance());
             ofAddListener(ofEvents().keyPressed, this, &Application::onKeyPressed);
+
+            // Setup OSC receiver
+            _oscReceiver = new ofxOscReceiver();
+            _oscReceiver->setup(4567);
         }
         
         Application::~Application() {
             _ofxPiMapper = 0;
             setState(0);
             ofRemoveListener(ofEvents().keyPressed, this, &Application::onKeyPressed);
+            delete _oscReceiver;
         }
         
         ApplicationBaseState * Application::getState() {
@@ -24,6 +29,17 @@ namespace ofx {
             return _ofxPiMapper;
         }
         
+        void Application::update(){
+            // Read incomming OSC messages
+            while(_oscReceiver->hasWaitingMessages()){
+                ofxOscMessage oscMessage;
+                _oscReceiver->getNextMessage(&oscMessage);
+
+                // Pass them to the onOscMessage handler one by one
+                onOscMessage(oscMessage);
+            }
+        }
+
         void Application::draw(){
             _state->draw(this);
         }
@@ -87,6 +103,13 @@ namespace ofx {
             }
         }
         
+        void Application::onOscMessage(ofxOscMessage & oscMessage){
+            ofLogNotice("Application::onOscMessage") << oscMessage.getAddress();
+            if (oscMessage.getNumArgs()){
+                ofLogNotice("value") << oscMessage.getArgAsFloat(0);
+            }
+        }
+
         void Application::setState(ApplicationBaseState * st){
             _state = st;
         }
