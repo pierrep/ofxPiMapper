@@ -45,9 +45,19 @@ namespace ofx {
         
         void ProjectionMappingState::onOscMessage(Application * app, ofxOscMessage & oscMessage){
             if (oscMessage.getAddress() == "/moveSelected/x"){
-                
+                ofVec2f distance = ofVec2f(0.0f, 0.0f);
+                if (oscMessage.getNumArgs()) {
+                    float x = oscMessage.getArgAsFloat(0);
+                    distance = ofVec2f(x * 10.0f, 0.0f);
+                }
+                app->getOfxPiMapper()->getProjectionEditor()->moveSelectedSurface(distance);
             } else if (oscMessage.getAddress() == "/moveSelected/y"){
-                
+                ofVec2f distance = ofVec2f(0.0f, 0.0f);
+                if (oscMessage.getNumArgs()) {
+                    float y = oscMessage.getArgAsFloat(0);
+                    distance = ofVec2f(0.0f, y * 10.0f);
+                }
+                app->getOfxPiMapper()->getProjectionEditor()->moveSelectedSurface(distance);
             } else if (oscMessage.getAddress() == "/selectNext/"){
             
                 int selectableSurfaceIndex = 0;
