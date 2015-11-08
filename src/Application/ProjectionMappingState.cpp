@@ -121,6 +121,28 @@ namespace ofx {
                 // Get selected surface
                 if (app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) {
                     // Check if a vertex is selected
+                    vector<CircleJoint *> * joints;
+                    joints = app->getOfxPiMapper()->getProjectionEditor()->getJoints();
+                    bool selected = false;
+                    int selectedJointIndex = -1;
+                    for (int i=0; i<joints->size(); i++) {
+                        if ((*joints)[i]->isSelected()) {
+                            selected = true;
+                            selectedJointIndex = i;
+                            break;
+                        }
+                    }
+                    int nextSelectedIndex = 0;
+                    if (selected) {
+                        // Select next joint
+                        if (selectedJointIndex < joints->size() - 1) {
+                            nextSelectedIndex = selectedJointIndex + 1;
+                        }
+                    }
+                    // Unselect all joints
+                    app->getOfxPiMapper()->getProjectionEditor()->unselectAllJoints();
+                    // select the one
+                    (*joints)[nextSelectedIndex]->select();
                 }
             }
         }
