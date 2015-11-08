@@ -117,6 +117,11 @@ namespace ofx {
                     app->getOfxPiMapper()->getSurfaceManager().getSurface(selectableSurfaceIndex),
                     app->getOfxPiMapper()->getProjectionEditor()));
                 
+            } else if (oscMessage.getAddress() == "/selectNextVertex/") {
+                // Get selected surface
+                if (app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) {
+                    // Check if a vertex is selected
+                }
             }
         }
     }
