@@ -144,6 +144,30 @@ namespace ofx {
                     // select the one
                     (*joints)[nextSelectedIndex]->select();
                 }
+            } else if (oscMessage.getAddress() == "/moveSelectedVertex/") {
+                // Get selected surface
+                if (app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()) {
+                    vector<CircleJoint *> * joints;
+                    joints = app->getOfxPiMapper()->getProjectionEditor()->getJoints();
+                    bool selected = false;
+                    int selectedJointIndex = -1;
+                    for (int i=0; i<joints->size(); i++) {
+                        if ((*joints)[i]->isSelected()) {
+                            selected = true;
+                            selectedJointIndex = i;
+                            break;
+                        }
+                    }
+                    // move only if selected
+                    if (selected) {
+                        ofVec2f vert = app->getOfxPiMapper()->getSurfaceManager().getSelectedSurface()->getVertices()[selectedJointIndex];
+                        float x = oscMessage.getArgAsFloat(0);
+                        float y = oscMessage.getArgAsFloat(1);
+                        app->getOfxPiMapper()->getProjectionEditor()->moveSelection(ofVec2f(
+                            x * 10.0f,
+                            y * 10.0f));
+                    }
+                }
             }
         }
     }
