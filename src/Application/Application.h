@@ -38,6 +38,8 @@ class Application : public KeyListener {
 
 		void setup();
 		void draw();
+        void play();
+        void stop();
 	
 		void onKeyPressed(ofKeyEventArgs & args);
 		void onKeyReleased(ofKeyEventArgs & args);

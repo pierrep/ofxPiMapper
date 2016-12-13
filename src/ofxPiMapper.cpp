@@ -10,6 +10,14 @@ void ofxPiMapper::draw(){
 	_application.draw();
 }
 
+void ofxPiMapper::play(){
+    _application.play();
+}
+
+void ofxPiMapper::stop(){
+    _application.stop();
+}
+
 void ofxPiMapper::registerFboSource(ofx::piMapper::FboSource & fboSource){
 	_application.addFboSource(fboSource);
 }

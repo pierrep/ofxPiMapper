@@ -25,6 +25,7 @@ Application::Application(){
     }else{
         _isSSHConnection = false;
     }
+
 }
 
 void Application::setup(){
@@ -47,6 +48,20 @@ ApplicationBaseState * Application::getState(){
 void Application::draw(){
 	_state->draw(this);
 	_info.draw();
+}
+
+void Application::play()
+{
+    ofKeyEventArgs args;
+    args.key = '.';
+    _state->onKeyPressed(this, args);
+}
+
+void Application::stop()
+{
+    ofKeyEventArgs args;
+    args.key = ',';
+    _state->onKeyPressed(this, args);
 }
 
 // Here we handle application state changes only

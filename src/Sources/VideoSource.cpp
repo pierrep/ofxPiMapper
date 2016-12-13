@@ -51,6 +51,21 @@ void VideoSource::clear(){
 	loaded = false;
 }
 
+void VideoSource::play(){
+    #ifdef TARGET_RASPBERRY_PI
+        omxPlayer->play();
+    #else
+        videoPlayer->play();
+    #endif
+}
+void VideoSource::stop(){
+    #ifdef TARGET_RASPBERRY_PI
+        omxPlayer->stop();
+    #else
+        videoPlayer->stop();
+    #endif
+}
+
 void VideoSource::togglePause(){
     #ifdef TARGET_RASPBERRY_PI
         omxPlayer->togglePause();

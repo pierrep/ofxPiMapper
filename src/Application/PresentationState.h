@@ -6,6 +6,9 @@
 #include "ofGraphics.h"
 #include "SetApplicationStateCmd.h"
 #include "ProjectionMappingState.h"
+#include "PlayAnimatedSourceCmd.h"
+#include "StopAnimatedSourceCmd.h"
+#include "ToggleAnimatedSourceCmd.h"
 #include "GuiMode.h"
 
 namespace ofx {
@@ -17,6 +20,7 @@ class PresentationState : public ApplicationBaseState {
 		static PresentationState * instance();
 		void draw(Application * app);
         void onMousePressed(Application * app, ofMouseEventArgs & args);
+        void onKeyPressed(Application * app, ofKeyEventArgs & args);
 
 	private:
 		static PresentationState * _instance;

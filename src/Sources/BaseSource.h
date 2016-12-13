@@ -21,6 +21,8 @@ class BaseSource {
 		string & getPath();
 		virtual void clear(){}
         virtual void togglePause(){}
+        virtual void play(){}
+        virtual void stop(){}
 
 		// TODO: add virtual increaseReferenceCount and decreaseReferenceCount methods
 		// and make the variable protected
