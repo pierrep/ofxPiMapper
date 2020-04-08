@@ -2,6 +2,7 @@
 
 #include "SurfaceManager.h"
 #include "CircleJoint.h"
+#include "EdgeBlendJoint.h"
 #include "Vec2.h"
 #include "Vec3.h"
 
@@ -29,14 +30,14 @@ class ProjectionEditorWidget {
 		void updateVertices();
 		void setSnapDistance(float newSnapDistance);
 		CircleJoint * hitTestJoints(Vec2 pos);
-        CircleJoint * hitTestEdgeBlendJoints(Vec2 pos);
+        EdgeBlendJoint * hitTestEdgeBlendJoints(Vec2 pos);
 		std::vector<CircleJoint *> * getJoints();
         const bool getEdgeBlendMode();
         void toggleEdgeBlend();
         void clearEdgeBlendJoints();
         void createEdgeBlendJoints();
         void updateEdgeBlendJoints();
-        std::vector<CircleJoint *> * getEdgeBlendJoints();
+        std::vector<EdgeBlendJoint *> * getEdgeBlendJoints();
 	
 		void onVertexChanged(int & i);
 		void onVerticesChanged(std::vector<Vec3> & vertices);
@@ -46,8 +47,8 @@ class ProjectionEditorWidget {
 
 	private:
 		SurfaceManager * surfaceManager;
-		std::vector<CircleJoint *> joints;
-        std::vector<CircleJoint *> edgeBlendJoints;
+        std::vector<CircleJoint *> joints;
+        std::vector<EdgeBlendJoint *> edgeBlendJoints;
 		bool bShiftKeyDown;
 		float fSnapDistance;
         bool bEdgeBlendMode;

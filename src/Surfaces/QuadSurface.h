@@ -38,6 +38,7 @@ class QuadSurface : public BaseSurface {
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
+        void setEdgeBlendMode(bool b);
 	
 		ofRectangle getMeshBoundingBox();
 		BaseSurface * clone();
@@ -46,6 +47,7 @@ class QuadSurface : public BaseSurface {
 		void calculateHomography();
 		float _matrix[16];
 		bool _perspectiveWarping;
+        bool _edgeBlendingMode;
 		ofMesh _meshCache;
 };
 

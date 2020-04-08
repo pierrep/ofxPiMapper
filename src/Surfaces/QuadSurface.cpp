@@ -286,6 +286,10 @@ bool QuadSurface::getPerspectiveWarping(){
 	return _perspectiveWarping;
 }
 
+void QuadSurface::setEdgeBlendMode(bool b){
+    _edgeBlendingMode = b;
+}
+
 ofRectangle QuadSurface::getMeshBoundingBox(){
 	float minX = 10000.0f;
 	float minY = 10000.0f;

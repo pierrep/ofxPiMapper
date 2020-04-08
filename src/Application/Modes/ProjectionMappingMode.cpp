@@ -199,7 +199,7 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 	Gui::instance()->onMousePressed(args);
 	
 	CircleJoint * hitJoint = 0;
-    CircleJoint * hitEdgeBlendJoint = 0;
+    EdgeBlendJoint * hitEdgeBlendJoint = 0;
 	int hitJointIndex = -1;
 	BaseSurface * hitSurface = 0;
 
