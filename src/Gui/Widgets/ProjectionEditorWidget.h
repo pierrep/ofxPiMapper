@@ -38,6 +38,9 @@ class ProjectionEditorWidget {
         void createEdgeBlendJoints();
         void updateEdgeBlendJoints();
         std::vector<EdgeBlendJoint *> * getEdgeBlendJoints();
+        int getSelectedEdgeBlendJoint();
+        void selectEdgeBlendJoint(int index);
+        void unselectEdgeBlendJoint(int index);
 	
 		void onVertexChanged(int & i);
 		void onVerticesChanged(std::vector<Vec3> & vertices);

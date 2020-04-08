@@ -35,6 +35,7 @@ class QuadSurface : public BaseSurface {
 		ofPolyline getTextureHitArea();
 		std::vector<Vec3> getVertices();
 		std::vector<Vec2> getTexCoords();
+        void setEdges(ofVec4f _edges);
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
@@ -57,6 +58,7 @@ class QuadSurface : public BaseSurface {
         string glESVertexShader;
         string gl2FragmentShader;
         string gl2VertexShader;
+        ofVec4f edges;
 };
 
 } // namespace piMapper

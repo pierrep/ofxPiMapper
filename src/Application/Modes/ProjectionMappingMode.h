@@ -6,6 +6,8 @@
 #include "StartDragSurfaceCmd.h"
 #include "DeselectSurfaceCmd.h"
 #include "MvSurfaceVertCmd.h"
+#include "MvSurfaceEdgeBlendJointCmd.h"
+#include "SelEdgeBlendJointCmd.h"
 #include "SurfaceType.h"
 #include "Gui.h"
 #include "ScaleWidget.h"

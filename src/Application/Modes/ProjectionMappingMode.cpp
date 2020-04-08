@@ -206,14 +206,21 @@ void ProjectionMappingMode::onMousePressed(Application * app, ofMouseEventArgs &
 	hitJoint = Gui::instance()->getProjectionEditorWidget().hitTestJoints(Vec2(args.x, args.y));
     hitEdgeBlendJoint = Gui::instance()->getProjectionEditorWidget().hitTestEdgeBlendJoints(Vec2(args.x, args.y));
 	
-    if(hitJoint || hitEdgeBlendJoint){
+    if(hitJoint){
 		for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
 			if((*Gui::instance()->getProjectionEditorWidget().getJoints())[i] == hitJoint){
 				hitJointIndex = i;
 				break;
 			}
 		}
-	}else{
+    }else if(hitEdgeBlendJoint) {
+        for(int i = Gui::instance()->getProjectionEditorWidget().getJoints()->size() - 1; i >= 0 ; --i){
+            if((*Gui::instance()->getProjectionEditorWidget().getEdgeBlendJoints())[i] == hitEdgeBlendJoint){
+                hitJointIndex = i;
+                break;
+            }
+        }
+    }else{
 		for(int i = app->getSurfaceManager()->size() - 1; i >= 0; --i){
 			if(app->getSurfaceManager()->getSurface(i)->hitTest(Vec2(args.x, args.y))){
 				hitSurface = app->getSurfaceManager()->getSurface(i);
@@ -272,10 +279,10 @@ void ProjectionMappingMode::onJointPressed(Application * app, GuiJointEvent & e)
 }
 
 void ProjectionMappingMode::onEdgeBlendJointPressed(Application * app, GuiJointEvent & e){
-    app->getCmdManager()->exec(new SelVertexCmd(app->getSurfaceManager(), e.jointIndex));
-    app->getCmdManager()->exec(new MvSurfaceVertCmd(
+    app->getCmdManager()->exec(new SelEdgeBlendJointCmd(&(Gui::instance()->getProjectionEditorWidget()), e.jointIndex));
+    app->getCmdManager()->exec(new MvSurfaceEdgeBlendJointCmd(
         e.jointIndex,
-        app->getSurfaceManager()->getSelectedSurface()));
+        &(Gui::instance()->getProjectionEditorWidget()) ));
 }
 
 void ProjectionMappingMode::onSurfacePressed(Application * app, GuiSurfaceEvent & e){

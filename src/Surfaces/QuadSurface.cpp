@@ -6,6 +6,7 @@ namespace piMapper {
 QuadSurface::QuadSurface(){
 	_perspectiveWarping = false;
     _edgeBlendingMode = false;
+    edges = ofVec4f::zero();
 	setup();
 }
 
@@ -105,6 +106,7 @@ void QuadSurface::draw(){
                 edgeBlendShader.setUniformTexture("tex0", *(source->getTexture()) , 1 );
                 edgeBlendShader.setUniform1i("w", source->getTexture()->getWidth());
                 edgeBlendShader.setUniform1i("h", source->getTexture()->getHeight());
+                edgeBlendShader.setUniform4f("edges",edges.x,edges.y,edges.z,edges.w);
             }
 			source->getTexture()->bind();
 			m.draw();
@@ -288,6 +290,10 @@ void QuadSurface::calculateHomography(){
 	dst[3][1] = p3.y;
 	
     HomographyHelper::findHomography(src, dst, _matrix);
+}
+
+void QuadSurface::setEdges(ofVec4f _edges){
+    edges = _edges;
 }
 
 void QuadSurface::setPerspectiveWarping(bool b){

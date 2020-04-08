@@ -39,20 +39,20 @@ void EdgeBlendJoint::draw(){
 	#else
 		ofCircle(position.x, position.y, radius);
 	#endif
-	ofNoFill();
+    ofNoFill();
 
-	if(selected){
-		ofSetColor(strokeColorSelected);
-	}else{
-		ofSetColor(strokeColor);
-	}
+    if(selected){
+        ofSetColor(strokeColorSelected);
+    }else{
+        ofSetColor(strokeColor);
+    }
 
-	ofSetLineWidth(strokeWidth);
-	#if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
-		ofDrawCircle(position.x, position.y, radius);
-	#else
-		ofCircle(position.x, position.y, radius);
-	#endif
+    ofSetLineWidth(strokeWidth);
+    #if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
+        ofDrawCircle(position.x, position.y, radius);
+    #else
+        ofCircle(position.x, position.y, radius);
+    #endif
 	ofPopStyle();
 }
 
@@ -62,6 +62,10 @@ void EdgeBlendJoint::setDefaultProperties(){
 
 const Vec2 EdgeBlendJoint::getDragPosition(){
     return dragPosition;
+}
+
+void EdgeBlendJoint::setDragPosition(Vec2 pos){
+    dragPosition = pos;
 }
 
 void EdgeBlendJoint::mouseDragged(ofMouseEventArgs & args){
@@ -82,9 +86,9 @@ bool EdgeBlendJoint::hitTest(Vec2 pos){
 }
 
 void EdgeBlendJoint::setDefaultColors(){
-    fillColor = ofColor(0, 255, 255, 0);
+    fillColor = ofColor(128, 128, 128, 255);
     strokeColor = ofColor(0, 255, 0);
-    fillColorSelected = ofColor(255, 255, 0, 0);
+    fillColorSelected = ofColor(255, 255, 0, 255);
     strokeColorSelected = ofColor(255, 0, 0);
 }
 

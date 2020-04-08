@@ -16,6 +16,7 @@ class EdgeBlendJoint : public BaseJoint {
 		bool hitTest(Vec2 position);
         void mouseDragged(ofMouseEventArgs & args);
         const Vec2 getDragPosition();
+        void setDragPosition(Vec2 pos);
 
 	private:
 		float radius;
