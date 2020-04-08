@@ -45,10 +45,18 @@ class QuadSurface : public BaseSurface {
 
 	private:
 		void calculateHomography();
+        void setupShaders();
+
+
 		float _matrix[16];
 		bool _perspectiveWarping;
         bool _edgeBlendingMode;
 		ofMesh _meshCache;
+        ofShader edgeBlendShader;
+        string glESFragmentShader;
+        string glESVertexShader;
+        string gl2FragmentShader;
+        string gl2VertexShader;
 };
 
 } // namespace piMapper
