@@ -82,7 +82,8 @@ class Application {
 		// Then we catch GUI events with this one and create commands
 		void onJointPressed(GuiJointEvent & e);
 		void onSurfacePressed(GuiSurfaceEvent & e);
-		void onBackgroundPressed(GuiBackgroundEvent & e);
+		void onBackgroundPressed(GuiBackgroundEvent & e);        
+        void onEdgeBlendJointPressed(GuiJointEvent & e);
 
 		void onGuiEvent(GuiEvent & e);
 

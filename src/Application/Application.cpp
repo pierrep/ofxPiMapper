@@ -13,6 +13,7 @@ Application::Application(){
 	ofHideCursor();
 
 	ofAddListener(Gui::instance()->jointPressedEvent, this, &Application::onJointPressed);
+    ofAddListener(Gui::instance()->edgeBlendJointPressedEvent, this, &Application::onEdgeBlendJointPressed);
 	ofAddListener(Gui::instance()->surfacePressedEvent, this, &Application::onSurfacePressed);
 	ofAddListener(Gui::instance()->backgroundPressedEvent, this, &Application::onBackgroundPressed);
 	ofAddListener(Gui::instance()->guiEvent, this, &Application::onGuiEvent);
@@ -173,6 +174,10 @@ void Application::onMouseDragged(ofMouseEventArgs &args){
 
 void Application::onJointPressed(GuiJointEvent & e){
 	_state->onJointPressed(this, e);
+}
+
+void Application::onEdgeBlendJointPressed(GuiJointEvent & e){
+    _state->onEdgeBlendJointPressed(this, e);
 }
 
 void Application::onSurfacePressed(GuiSurfaceEvent & e){
