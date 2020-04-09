@@ -20,6 +20,8 @@ class MvSurfaceEdgeBlendJointCmd : public BaseUndoCmd {
 
 	private:
         int _jointIndex;
+        int _newJointIndex;
+        int _prevJointIndex;
         Vec2 _prevJointPos;
         ProjectionEditorWidget * _projectionEditorWidget;
 

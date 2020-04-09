@@ -279,7 +279,8 @@ void ProjectionMappingMode::onJointPressed(Application * app, GuiJointEvent & e)
 }
 
 void ProjectionMappingMode::onEdgeBlendJointPressed(Application * app, GuiJointEvent & e){
-    app->getCmdManager()->exec(new SelEdgeBlendJointCmd(&(Gui::instance()->getProjectionEditorWidget()), e.jointIndex));
+    //app->getCmdManager()->exec(new SelEdgeBlendJointCmd(&(Gui::instance()->getProjectionEditorWidget()), e.jointIndex));
+    //cout << " selected joint: " <<  Gui::instance()->getProjectionEditorWidget().getSelectedEdgeBlendJoint() << endl;
     app->getCmdManager()->exec(new MvSurfaceEdgeBlendJointCmd(
         e.jointIndex,
         &(Gui::instance()->getProjectionEditorWidget()) ));

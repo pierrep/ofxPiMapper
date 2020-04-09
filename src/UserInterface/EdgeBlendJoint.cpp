@@ -87,9 +87,9 @@ bool EdgeBlendJoint::hitTest(Vec2 pos){
 
 void EdgeBlendJoint::setDefaultColors(){
     fillColor = ofColor(128, 128, 128, 255);
-    strokeColor = ofColor(0, 255, 0);
-    fillColorSelected = ofColor(255, 255, 0, 255);
-    strokeColorSelected = ofColor(255, 0, 0);
+    strokeColor = ofColor(36, 138, 63, 255);
+    fillColorSelected = ofColor(36, 138, 63, 255);
+    strokeColorSelected = ofColor(36, 138, 63, 255);
 }
 
 } // namespace piMapper
