@@ -394,7 +394,8 @@ void QuadSurface::setupShaders()
                 uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
                 // controls blending area at left, top, right and bottom in percentages ([0..0.5])
                 uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
-
+                uniform int w;
+                uniform int h;
                 varying vec2 texCoordVarying;
 
                 void main (void)
@@ -405,10 +406,10 @@ void QuadSurface::setupShaders()
 
                     // calculate edge blending factor
                     float a = 1.0;
-                    if(edges.x > 0.0) a *= clamp(uv.x/edges.x, 0.0, 1.0);
-                    if(edges.y > 0.0) a *= clamp(uv.y/edges.y, 0.0, 1.0);
-                    if(edges.z > 0.0) a *= clamp((1.0-uv.x)/edges.z, 0.0, 1.0);
-                    if(edges.w > 0.0) a *= clamp((1.0-uv.y)/edges.w, 0.0, 1.0);
+                    if(edges.x > 0.0) a *= clamp((uv.x/float(w))/edges.x, 0.0, 1.0);
+                    if(edges.y > 0.0) a *= clamp((uv.y/float(h))/edges.y, 0.0, 1.0);
+                    if(edges.z > 0.0) a *= clamp((1.0-(uv.x/float(w)))/edges.z, 0.0, 1.0);
+                    if(edges.w > 0.0) a *= clamp((1.0-(uv.y/float(h)))/edges.w, 0.0, 1.0);
 
 
                     // blend function with luminance control (for each of the 3 channels)
@@ -419,7 +420,8 @@ void QuadSurface::setupShaders()
                     blend = pow(blend, one / gamma);
 
                     // set final color
-                    gl_FragColor = vec4(col * blend, 1.0);
+                    gl_FragColor = vec4(col.rgb * blend, col.a*1.0);
+
                 }
         );
 
