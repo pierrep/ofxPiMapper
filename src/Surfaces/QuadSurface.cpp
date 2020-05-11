@@ -38,27 +38,27 @@ void QuadSurface::setup(Vec3 p1, Vec3 p2, Vec3 p3, Vec3 p4,
 	// Assign texture
 	source = newSource;
 
-	// Clear mesh
-	mesh.clear();
+//	// Clear mesh
+//	mesh.clear();
 
-	// Create a surface with the points
-	mesh.addVertex(p1.toOf());
-	mesh.addVertex(p2.toOf());
-	mesh.addVertex(p3.toOf());
-	mesh.addVertex(p4.toOf());
+//	// Create a surface with the points
+//	mesh.addVertex(p1.toOf());
+//	mesh.addVertex(p2.toOf());
+//	mesh.addVertex(p3.toOf());
+//	mesh.addVertex(p4.toOf());
 
-	// Add 2 triangles
-	mesh.addTriangle(0, 2, 3);
-	mesh.addTriangle(0, 1, 2);
+//	// Add 2 triangles
+//	mesh.addTriangle(0, 2, 3);
+//	mesh.addTriangle(0, 1, 2);
 
-	// Add texture coordinates
-	mesh.addTexCoord(t1.toOf());
-	mesh.addTexCoord(t2.toOf());
-	mesh.addTexCoord(t3.toOf());
-	mesh.addTexCoord(t4.toOf());
+//	// Add texture coordinates
+//	mesh.addTexCoord(t1.toOf());
+//	mesh.addTexCoord(t2.toOf());
+//	mesh.addTexCoord(t3.toOf());
+//	mesh.addTexCoord(t4.toOf());
 	
-	_meshCache = mesh;
-	calculateHomography();
+//	_meshCache = mesh;
+//	calculateHomography();
 }
 
 void QuadSurface::draw(){
@@ -100,7 +100,7 @@ void QuadSurface::draw(){
 			bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
 			ofEnableNormalizedTexCoords();
 			
-			glMultMatrixf(_matrix);
+            //glMultMatrixf(_matrix);
             if(_edgeBlendingMode) {
                 edgeBlendShader.begin();
                 edgeBlendShader.setUniformTexture("tex0", *(source->getTexture()) , 1 );
@@ -348,6 +348,109 @@ BaseSurface * QuadSurface::clone(){
 }
 
 #define STRINGIFY(A) #A
+
+#ifdef TARGET_OPENGLES
+static const string vertex_shader_header =
+        "%extensions%\n"
+        "precision highp float;\n"
+        "#define IN attribute\n"
+        "#define OUT varying\n"
+        "#define TEXTURE texture2D\n"
+        "#define TARGET_OPENGLES\n";
+static const string fragment_shader_header =
+        "%extensions%\n"
+        "precision highp float;\n"
+        "#define IN varying\n"
+        "#define OUT\n"
+        "#define TEXTURE texture2D\n"
+        "#define FRAG_COLOR gl_FragColor\n"
+        "#define TARGET_OPENGLES\n";
+#else
+static const string vertex_shader_header =
+        "#version %glsl_version%\n"
+        "%extensions%\n"
+        "#define IN in\n"
+        "#define OUT out\n"
+        "#define TEXTURE texture\n";
+static const string fragment_shader_header =
+        "#version %glsl_version%\n"
+        "%extensions%\n"
+        "#define IN in\n"
+        "#define OUT out\n"
+        "#define TEXTURE texture\n"
+        "#define FRAG_COLOR fragColor\n"
+        "out vec4 fragColor;\n";
+#endif
+
+static const string defaultVertexShader = vertex_shader_header + STRINGIFY(
+    uniform mat4 projectionMatrix;
+    uniform mat4 modelViewMatrix;
+    uniform mat4 textureMatrix;
+    uniform mat4 modelViewProjectionMatrix;
+
+    IN vec4  position;
+    IN vec2  texcoord;
+    IN vec4  color;
+    IN vec3  normal;
+
+    OUT vec4 colorVarying;
+    OUT vec2 texCoordVarying;
+    OUT vec4 normalVarying;
+
+    void main()
+    {
+        colorVarying = color;
+        texCoordVarying = (textureMatrix*vec4(texcoord.x,texcoord.y,0,1)).xy;
+        gl_Position = modelViewProjectionMatrix * position;
+    }
+);
+
+// ----------------------------------------------------------------------
+
+static const string defaultFragmentShaderTex2D = fragment_shader_header + STRINGIFY(
+
+    uniform sampler2D src_tex_unit0;
+
+    IN vec4 colorVarying;
+    IN vec2 texCoordVarying;
+
+    // used in a few inversions
+    const vec3 one = vec3(1.0);
+
+    // controls the interpolation curve ([1..n], 1.0 = linear, 2.0 = default quadratic)
+    uniform float exponent; // try: 2.0;
+    // controls the center of interpolation ([0..1], 0.5 = linear)
+    uniform vec3 luminance; // try: vec3(0.5);
+    // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
+    uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
+    // controls blending area at left, top, right and bottom in percentages ([0..0.5])
+    uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
+    uniform int w;
+    uniform int h;
+
+    void main(){
+        // initialize coordinates and colors
+        vec4 col = TEXTURE(src_tex_unit0,texCoordVarying);
+
+        // calculate edge blending factor
+        float a = 1.0;
+        if(edges.x > 0.0) a *= clamp((uv.x/float(w))/edges.x, 0.0, 1.0);
+        if(edges.y > 0.0) a *= clamp((uv.y/float(h))/edges.y, 0.0, 1.0);
+        if(edges.z > 0.0) a *= clamp((1.0-(uv.x/float(w)))/edges.z, 0.0, 1.0);
+        if(edges.w > 0.0) a *= clamp((1.0-(uv.y/float(h)))/edges.w, 0.0, 1.0);
+
+        // blend function with luminance control (for each of the 3 channels)
+        vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
+            : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
+
+        // gamma correction (for each of the 3 channels)
+        blend = pow(blend, one / gamma);
+
+        // set final color
+        FRAG_COLOR = vec4(col.rgb * blend, col.a*1.0);
+    }
+);
+
 void QuadSurface::setupShaders()
 {
     glESVertexShader = STRINGIFY(
@@ -425,10 +528,10 @@ void QuadSurface::setupShaders()
                 }
         );
 
-        gl2FragmentShader = "#version 120\n #extension GL_ARB_texture_rectangle : enable\n";
+        gl2FragmentShader = "#version 330\n #extension GL_ARB_texture_rectangle : enable\n";
         gl2FragmentShader += STRINGIFY(
-            uniform sampler2DRect tex0;
-            //uniform sampler2D tex0;
+
+            uniform sampler2D tex0;
 
             // used in a few inversions
             const vec3 one = vec3(1.0);
@@ -452,10 +555,6 @@ void QuadSurface::setupShaders()
 
                 // calculate edge blending factor
                 float a = 1.0;
-//                if(edges.x > 0.0) a *= clamp(uv.x/edges.x, 0.0, 1.0);
-//                if(edges.y > 0.0) a *= clamp(uv.y/edges.y, 0.0, 1.0);
-//                if(edges.z > 0.0) a *= clamp((1.0-uv.x)/edges.z, 0.0, 1.0);
-//                if(edges.w > 0.0) a *= clamp((1.0-uv.y)/edges.w, 0.0, 1.0);
                 if(edges.x > 0.0) a *= clamp((uv.x/float(w))/edges.x, 0.0, 1.0);
                 if(edges.y > 0.0) a *= clamp((uv.y/float(h))/edges.y, 0.0, 1.0);
                 if(edges.z > 0.0) a *= clamp((1.0-(uv.x/float(w)))/edges.z, 0.0, 1.0);
@@ -470,7 +569,6 @@ void QuadSurface::setupShaders()
 
                 // set final color
                 gl_FragColor = vec4(col.rgb * blend, col.a*1.0);
-                //gl_FragColor = vec4(col, 1.0);
             }
         );
 
@@ -483,7 +581,9 @@ void QuadSurface::setupShaders()
         if (ofIsGLProgrammableRenderer()) {
 
         } else {
-            edgeBlendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, gl2FragmentShader);
+            edgeBlendShader.setupShaderFromSource(GL_VERTEX_SHADER, defaultVertexShader);
+            edgeBlendShader.setupShaderFromSource(GL_FRAGMENT_SHADER, defaultFragmentShaderTex2D);
+            edgeBlendShader.bindDefaults();
             edgeBlendShader.linkProgram();
             edgeBlendShader.begin();
             edgeBlendShader.setUniform1f("exponent",1.0f);
@@ -495,6 +595,8 @@ void QuadSurface::setupShaders()
         }
     #endif
 }
+
+
 
 } // namespace piMapper
 } // namespace ofx
