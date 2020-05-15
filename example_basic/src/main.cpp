@@ -2,7 +2,7 @@
 #include "ofApp.h"
 
 int main(){
-    ofSetLogLevel(OF_LOG_VERBOSE);
+    //ofSetLogLevel(OF_LOG_VERBOSE);
 #ifdef TARGET_OPENGLES
     ofGLESWindowSettings settings;
     settings.glesVersion = 2;

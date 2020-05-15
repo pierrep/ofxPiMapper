@@ -47,7 +47,9 @@ class QuadSurface : public BaseSurface {
 	private:
 		void calculateHomography();
         void setupShaders();
-
+        void setupVertexArray();
+        void updateVertexBuffer();
+        void calculateQ();
 
 		float _matrix[16];
 		bool _perspectiveWarping;
@@ -58,7 +60,12 @@ class QuadSurface : public BaseSurface {
         string glESVertexShader;
         string gl2FragmentShader;
         string gl2VertexShader;
-        ofVec4f edges;
+        ofVec4f edges;     
+
+        GLuint VBO, VAO;
+        float q0, q1, q2, q3;
+        ofShader shader; //warping shader
+
 };
 
 } // namespace piMapper
