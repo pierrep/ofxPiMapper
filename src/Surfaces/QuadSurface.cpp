@@ -34,8 +34,6 @@ namespace piMapper {
 
         setupShaders();
 
-        //        shader.load("calibrate");
-        //        shader.printActiveAttributes();
         q0 = q1 = q2 = q3 = 1.0;
         setupVertexArray();
     }
@@ -96,7 +94,38 @@ namespace piMapper {
             //            m.setVertex(2, Vec3(box.width, box.height, 0).toOf());
             //            m.setVertex(3, Vec3(0, box.height, 0).toOf());
 
-            if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3)) {
+#ifdef TARGET_OPENGLES
+            if (meshChanged) {
+                calculateQ();
+                updateVertexBuffer();
+                _meshCache = mesh;
+            }
+
+            ofPushMatrix();
+            bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
+            ofEnableNormalizedTexCoords();
+
+            shader.begin();
+            shader.setUniformTexture("tex", *(source->getTexture()), 0);
+            shader.setUniform1i("edgeBlend", _edgeBlendingMode ? 1 : 0);
+            shader.setUniform1i("w", 1);
+            shader.setUniform1i("h", 1);
+            shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // 0 = the starting index in the enabled arrays; 4 = the number of indices to be rendered.
+            glBindVertexArray(0);
+
+            shader.end();
+
+            if (!normalizedTexCoords) {
+                ofDisableNormalizedTexCoords();
+            }
+
+            ofPopMatrix();
+#else
+            if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3))
+            {
 
                 if (meshChanged) {
                     calculateQ();
@@ -107,17 +136,6 @@ namespace piMapper {
                 ofPushMatrix();
                 bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
                 ofEnableNormalizedTexCoords();
-
-                //                if (_edgeBlendingMode) {
-                //                    edgeBlendShader.begin();
-                //                    edgeBlendShader.setUniformTexture("tex0", *(source->getTexture()), 1);
-                //                    edgeBlendShader.setUniform1i("w", source->getTexture()->getWidth());
-                //                    edgeBlendShader.setUniform1i("h", source->getTexture()->getHeight());
-                //                    edgeBlendShader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
-                //                }
-
-                //                q0 = q1 = q2 = q3 = 1.0;
-                //                updateVertexBuffer();
 
                 shader.begin();
                 shader.setUniformTexture("tex", *(source->getTexture()), 0);
@@ -132,16 +150,14 @@ namespace piMapper {
 
                 shader.end();
 
-                if (_edgeBlendingMode) {
-                    //edgeBlendShader.end();
-                }
-
                 if (!normalizedTexCoords) {
                     ofDisableNormalizedTexCoords();
                 }
 
                 ofPopMatrix();
-            } else {
+            }
+
+            else {
                 if (meshChanged) {
                     calculateHomography();
                     _meshCache = mesh;
@@ -181,7 +197,7 @@ namespace piMapper {
                 }
                 ofPopMatrix();
             }
-
+#endif
         } else {
             bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
             ofEnableNormalizedTexCoords();
@@ -781,7 +797,7 @@ namespace piMapper {
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
 
-#ifdef TARGET_GLES
+#ifdef TARGET_OPENGLES
         glEnableVertexAttribArray(v3PosAttributeIndex);
         glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 #else
@@ -789,7 +805,7 @@ namespace piMapper {
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 #endif
 
-#ifdef TARGET_GLES
+#ifdef TARGET_OPENGLES
         glEnableVertexAttribArray(v3TexAttributeIndex);
         glVertexAttribPointer(v3TexAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 #else
