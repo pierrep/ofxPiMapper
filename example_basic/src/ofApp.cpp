@@ -2,10 +2,6 @@
 
 void ofApp::setup()
 {
-    if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3))
-    {
-        ofDisableArbTex();
-    }
     mapper.setup();
 
 #ifdef TARGET_RASPBERRY_PI

@@ -12,6 +12,15 @@ Application::Application(){
 	setState(PresentationMode::instance());
 	ofHideCursor();
 
+#ifdef TARGET_RASPBERRY_PI
+        ofDisableArbTex();
+#else
+        // Only use Texture2D for OpenGL3.3 or GLES2
+        if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3)) {
+            ofDisableArbTex();
+        }
+#endif
+
 	ofAddListener(Gui::instance()->jointPressedEvent, this, &Application::onJointPressed);
     ofAddListener(Gui::instance()->edgeBlendJointPressedEvent, this, &Application::onEdgeBlendJointPressed);
 	ofAddListener(Gui::instance()->surfacePressedEvent, this, &Application::onSurfacePressed);

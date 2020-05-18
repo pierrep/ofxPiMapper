@@ -55,16 +55,20 @@ class QuadSurface : public BaseSurface {
 		bool _perspectiveWarping;
         bool _edgeBlendingMode;
 		ofMesh _meshCache;
-        ofShader edgeBlendShader;
-        string glESFragmentShader;
+        ofShader shader;
         string glESVertexShader;
+        string glESFragmentShader;
+        string gl3VertexShader;
+        string gl3FragmentShader;
         string gl2FragmentShader;
-        string gl2VertexShader;
         ofVec4f edges;     
 
         GLuint VBO, VAO;
         float q0, q1, q2, q3;
-        ofShader shader; //warping shader
+
+        //GLES2 only
+        GLint v3PosAttributeIndex;
+        GLint v3TexAttributeIndex;
 
 };
 
