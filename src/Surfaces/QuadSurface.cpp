@@ -35,6 +35,8 @@ namespace piMapper {
         setupShaders();
 
         q0 = q1 = q2 = q3 = 1.0;
+        
+        vaoChecked = false;
         setupVertexArray();
     }
 
@@ -112,9 +114,20 @@ namespace piMapper {
             shader.setUniform1i("h", 1);
             shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
 
-            glBindVertexArray(VAO);
+
+			glBindBuffer(GL_ARRAY_BUFFER, VBO);
+		
+			glEnableVertexAttribArray(v3PosAttributeIndex);
+			glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+			glEnableVertexAttribArray(v3TexAttributeIndex);
+			glVertexAttribPointer(v3TexAttributeIndex, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+
             glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // 0 = the starting index in the enabled arrays; 4 = the number of indices to be rendered.
-            glBindVertexArray(0);
+            
+			glDisableVertexAttribArray(v3PosAttributeIndex);
+			glDisableVertexAttribArray(v3TexAttributeIndex);
+            glBindBuffer(GL_ARRAY_BUFFER, 0);
 
             shader.end();
 
@@ -179,7 +192,7 @@ namespace piMapper {
                     glMultMatrixf(_matrix);
                     if (_edgeBlendingMode) {
                         shader.begin();
-                        shader.setUniformTexture("tex0", *(source->getTexture()), 1);
+                        shader.setUniformTexture("tex0", *(source->getTexture()), 0);
                         shader.setUniform1i("w", source->getTexture()->getWidth());
                         shader.setUniform1i("h", source->getTexture()->getHeight());
                         shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
@@ -548,12 +561,14 @@ namespace piMapper {
     void QuadSurface::setupShaders()
     {
         glESVertexShader = STRINGIFY(
+			precision highp float;
+			
             uniform mat4 modelViewProjectionMatrix;
 
             attribute vec3 position;
             attribute vec3 texcoord;
 
-            out vec3 texCoordVarying;
+            varying vec3 texCoordVarying;
 
             void main() {
                 gl_Position = modelViewProjectionMatrix * vec4(position, 1.0);
@@ -561,8 +576,7 @@ namespace piMapper {
             });
 
         glESFragmentShader = STRINGIFY(
-            // define default precision for float, vec, mat.
-            precision highp float;
+				precision highp float;
 
                 uniform sampler2D tex;
                 varying vec3 texCoordVarying;
@@ -605,6 +619,8 @@ namespace piMapper {
 
                     // set final color
                     gl_FragColor = vec4(col.rgb * blend, col.a * 1.0);
+                    //gl_FragColor = vec4(vec3(1.0,0,0) * blend, col.a * 1.0);
+                    //gl_FragColor = vec4(col);
 
                 }
             );
@@ -715,9 +731,10 @@ namespace piMapper {
             });
 
 #ifdef TARGET_OPENGLES
+			ofLogNotice() << "Setting up GLES2 shader for QuadSurface";
             shader.setupShaderFromSource(GL_VERTEX_SHADER, glESVertexShader);
-            shader.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShader);
-            shader.linkProgram();
+            shader.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShader);            
+            shader.linkProgram();                     
             shader.begin();
             shader.setUniform1f("exponent", 1.0f);
             shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
@@ -782,7 +799,7 @@ namespace piMapper {
 
     //--------------------------------------------------------------
     void QuadSurface::setupVertexArray()
-    {
+    {					
         GLfloat v[] = { getVertex(0).x, getVertex(0).y, getVertex(1).x, getVertex(1).y,
             getVertex(2).x, getVertex(2).y, getVertex(3).x, getVertex(3).y,
             0 * q0, 0 * q0, q0,
@@ -790,31 +807,38 @@ namespace piMapper {
             1 * q2, 1 * q2, q2,
             0 * q3, 1 * q3, q3 };
 
-        glGenVertexArrays(1, &VAO);
+		
+        //glGenVertexArrays(1, &const_cast<QuadSurface*>(this)->VAO);
         glGenBuffers(1, &VBO);
-        glBindVertexArray(VAO);
+        //glBindVertexArray(VAO);
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        ofLogNotice() << "Bound VBO";
         glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
 
 #ifdef TARGET_OPENGLES
-        glEnableVertexAttribArray(v3PosAttributeIndex);
-        glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+		//ofLogNotice() << "Try to enable v3PosAttributeIndex";
+        //glEnableVertexAttribArray(v3PosAttributeIndex);
+        //glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);    
 #else
         glEnableVertexAttribArray(0);
         glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
 #endif
 
 #ifdef TARGET_OPENGLES
-        glEnableVertexAttribArray(v3TexAttributeIndex);
-        glVertexAttribPointer(v3TexAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+		//ofLogNotice() << "Try to enable v3TexAttributeIndex";
+        //glEnableVertexAttribArray(v3TexAttributeIndex);
+        //glVertexAttribPointer(v3TexAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+        //ofLogNotice() << "Enabled v3TexAttributeIndex!";
 #else
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
 #endif
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        glBindVertexArray(0);
+        //glBindVertexArray(0);
+        
+        ofLogNotice() << "End setup Vertex Array";
     }
 
     //--------------------------------------------------------------
