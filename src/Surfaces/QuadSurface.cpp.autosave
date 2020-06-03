@@ -138,7 +138,7 @@ namespace piMapper {
 
             ofPopMatrix();
 #else
-            if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3)) {
+            if (ofIsGLProgrammableRenderer()) {
 
                 if (meshChanged) {
                     calculateQ();
@@ -459,105 +459,6 @@ namespace piMapper {
 
 #define STRINGIFY(A) #A
 
-#ifdef TARGET_OPENGLES
-    static const string vertex_shader_header = "precision highp float;\n"
-                                               "#define IN attribute\n"
-                                               "#define OUT varying\n"
-                                               "#define TEXTURE texture2D\n"
-                                               "#define TARGET_OPENGLES\n";
-    static const string fragment_shader_header = "precision highp float;\n"
-                                                 "#define IN varying\n"
-                                                 "#define OUT\n"
-                                                 "#define TEXTURE texture2D\n"
-                                                 "#define FRAG_COLOR gl_FragColor\n"
-                                                 "#define TARGET_OPENGLES\n";
-#else
-    static const string vertex_shader_header = "#version 330\n"
-                                               "#define IN in\n"
-                                               "#define OUT out\n"
-                                               "#define TEXTURE texture\n";
-    static const string fragment_shader_header = "#version 330\n"
-                                                 "#define IN in\n"
-                                                 "#define OUT out\n"
-                                                 "#define TEXTURE texture\n"
-                                                 "#define FRAG_COLOR fragColor\n"
-                                                 "out vec4 fragColor;\n";
-#endif
-
-    static const string defaultVertexShader = vertex_shader_header
-        + STRINGIFY(
-            uniform mat4 projectionMatrix;
-            uniform mat4 modelViewMatrix;
-            uniform mat4 textureMatrix;
-            uniform mat4 modelViewProjectionMatrix;
-
-            IN vec4 position;
-            IN vec2 texcoord;
-            IN vec4 color;
-            IN vec3 normal;
-
-            OUT vec4 colorVarying;
-            OUT vec2 texCoordVarying;
-            OUT vec4 normalVarying;
-
-            layout(location = 0) in vec3 position;
-            layout(location = 3) in vec3 texcoord;
-
-            void main() {
-                colorVarying = color;
-                texCoordVarying = (textureMatrix * vec4(texcoord.x, texcoord.y, 0, 1)).xy;
-                gl_Position = modelViewProjectionMatrix * position;
-            });
-
-    // ----------------------------------------------------------------------
-
-    static const string defaultFragmentShaderTex2D = fragment_shader_header
-        + STRINGIFY(
-            uniform sampler2D src_tex_unit0;
-
-            IN vec2 texCoordVarying;
-
-            // used in a few inversions
-            const vec3 one = vec3(1.0);
-
-            // controls the interpolation curve ([1..n], 1.0 = linear, 2.0 = default quadratic)
-            uniform float exponent; // try: 2.0;
-            // controls the center of interpolation ([0..1], 0.5 = linear)
-            uniform vec3 luminance; // try: vec3(0.5);
-            // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
-            uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
-            // controls blending area at left, top, right and bottom in percentages ([0..0.5])
-            uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
-            uniform int w; uniform int h;
-
-            void main() {
-                // initialize coordinates and colors
-                vec2 uv = uv = varyingtexcoord.xy / varyingtexcoord.z;
-                ;
-                vec4 col = TEXTURE(src_tex_unit0, texCoordVarying);
-
-                // calculate edge blending factor
-                float a = 1.0;
-                if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w)) / edges.x, 0.0, 1.0);
-                if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h)) / edges.y, 0.0, 1.0);
-                if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w))) / edges.z, 0.0, 1.0);
-                if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h))) / edges.w, 0.0, 1.0);
-
-                // blend function with luminance control (for each of the 3 channels)
-                vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
-                                       : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
-
-                // gamma correction (for each of the 3 channels)
-                blend = pow(blend, one / gamma);
-
-                // set final color
-                FRAG_COLOR = vec4(col.rgb * blend, col.a * 1.0);
-            });
-
     void QuadSurface::setupShaders()
     {
         glESVertexShader = STRINGIFY(
@@ -753,16 +654,16 @@ namespace piMapper {
             shader.linkProgram();
             shader.begin();
             shader.setUniform1f("exponent", 1.0f);
-            shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
-            shader.setUniform3f("gamma", 1.8, 1.8, 1.8);
+            shader.setUniform3f("luminance", 0.5f, 0.5f, 0.5f);
+            shader.setUniform3f("gamma", 1.8f, 1.8f, 1.8f);
             shader.end();
         } else {
             shader.setupShaderFromSource(GL_FRAGMENT_SHADER, gl2FragmentShader);
             shader.linkProgram();
             shader.begin();
             shader.setUniform1f("exponent", 1.0f);
-            shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
-            shader.setUniform3f("gamma", 1.8, 1.8, 1.8);
+            shader.setUniform3f("luminance", 0.5f, 0.5f, 0.5f);
+            shader.setUniform3f("gamma", 1.8f, 1.8f, 1.8f);
             shader.end();
         }
 
