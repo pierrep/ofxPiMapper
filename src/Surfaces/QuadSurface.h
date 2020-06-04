@@ -69,7 +69,6 @@ class QuadSurface : public BaseSurface {
         //GLES2 only
         GLint v3PosAttributeIndex;
         GLint v3TexAttributeIndex;
-        bool vaoChecked;
 
 };
 

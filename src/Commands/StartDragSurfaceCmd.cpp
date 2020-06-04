@@ -8,13 +8,13 @@ StartDragSurfaceCmd::StartDragSurfaceCmd(BaseSurface * surface){
 }
 
 void StartDragSurfaceCmd::exec(){
-	ofLogNotice("StartDragSurfaceCmd", "exec");
+    ofLogVerbose("StartDragSurfaceCmd", "exec");
 	_previousVertices = _surface->getVertices();
 	_surface->setMoved(false);
 }
 
 void StartDragSurfaceCmd::undo(){
-	ofLogNotice("StartDragSurfaceCmd", "undo");
+    ofLogVerbose("StartDragSurfaceCmd", "undo");
 	Vec3 step = _previousVertices[0] - _surface->getVertices()[0];
 	_surface->moveBy(step);
 }

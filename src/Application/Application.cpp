@@ -16,7 +16,7 @@ Application::Application(){
         ofDisableArbTex();
 #else
         // Only use Texture2D for OpenGL3.3 or GLES2
-        if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3)) {
+        if (ofIsGLProgrammableRenderer()) {
             ofDisableArbTex();
         }
 #endif

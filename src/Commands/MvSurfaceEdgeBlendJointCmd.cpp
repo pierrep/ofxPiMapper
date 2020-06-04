@@ -9,7 +9,7 @@ MvSurfaceEdgeBlendJointCmd::MvSurfaceEdgeBlendJointCmd(int jointIndex, Projectio
 }
 
 void MvSurfaceEdgeBlendJointCmd::exec(){
-    ofLogNotice("MvSurfaceEdgeBlendJointCmd", "exec");
+    ofLogVerbose("MvSurfaceEdgeBlendJointCmd", "exec");
     _prevJointIndex = _projectionEditorWidget->getSelectedEdgeBlendJoint();
     if(_prevJointIndex != -1) {
         _projectionEditorWidget->selectEdgeBlendJoint(_jointIndex);
@@ -22,7 +22,7 @@ void MvSurfaceEdgeBlendJointCmd::exec(){
 }
 
 void MvSurfaceEdgeBlendJointCmd::undo(){
-	ofLogNotice("MvSurfaceVertCommand", "undo");
+    ofLogVerbose("MvSurfaceVertCommand", "undo");
     _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->setDragPosition(_prevJointPos);
     float x = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.x;
     float y = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.y;

@@ -64,8 +64,6 @@ namespace piMapper {
         setupShaders();
 
         if (ofIsGLProgrammableRenderer()) {
-            q0 = q1 = q2 = q3 = 1.0;
-            vaoChecked = false;
             setupVertexArray();
         } else {
             calculateHomography();
@@ -138,7 +136,7 @@ namespace piMapper {
 
             ofPopMatrix();
 #else
-            if ((ofGetGLRenderer()->getGLVersionMajor() >= 3) && (ofGetGLRenderer()->getGLVersionMinor() >= 3)) {
+            if (ofIsGLProgrammableRenderer()) {
 
                 if (meshChanged) {
                     calculateQ();
@@ -168,9 +166,7 @@ namespace piMapper {
                 }
 
                 ofPopMatrix();
-            }
-
-            else {
+            } else {
                 if (meshChanged) {
                     calculateHomography();
                     _meshCache = mesh;
@@ -459,105 +455,6 @@ namespace piMapper {
 
 #define STRINGIFY(A) #A
 
-#ifdef TARGET_OPENGLES
-    static const string vertex_shader_header = "precision highp float;\n"
-                                               "#define IN attribute\n"
-                                               "#define OUT varying\n"
-                                               "#define TEXTURE texture2D\n"
-                                               "#define TARGET_OPENGLES\n";
-    static const string fragment_shader_header = "precision highp float;\n"
-                                                 "#define IN varying\n"
-                                                 "#define OUT\n"
-                                                 "#define TEXTURE texture2D\n"
-                                                 "#define FRAG_COLOR gl_FragColor\n"
-                                                 "#define TARGET_OPENGLES\n";
-#else
-    static const string vertex_shader_header = "#version 330\n"
-                                               "#define IN in\n"
-                                               "#define OUT out\n"
-                                               "#define TEXTURE texture\n";
-    static const string fragment_shader_header = "#version 330\n"
-                                                 "#define IN in\n"
-                                                 "#define OUT out\n"
-                                                 "#define TEXTURE texture\n"
-                                                 "#define FRAG_COLOR fragColor\n"
-                                                 "out vec4 fragColor;\n";
-#endif
-
-    static const string defaultVertexShader = vertex_shader_header
-        + STRINGIFY(
-            uniform mat4 projectionMatrix;
-            uniform mat4 modelViewMatrix;
-            uniform mat4 textureMatrix;
-            uniform mat4 modelViewProjectionMatrix;
-
-            IN vec4 position;
-            IN vec2 texcoord;
-            IN vec4 color;
-            IN vec3 normal;
-
-            OUT vec4 colorVarying;
-            OUT vec2 texCoordVarying;
-            OUT vec4 normalVarying;
-
-            layout(location = 0) in vec3 position;
-            layout(location = 3) in vec3 texcoord;
-
-            void main() {
-                colorVarying = color;
-                texCoordVarying = (textureMatrix * vec4(texcoord.x, texcoord.y, 0, 1)).xy;
-                gl_Position = modelViewProjectionMatrix * position;
-            });
-
-    // ----------------------------------------------------------------------
-
-    static const string defaultFragmentShaderTex2D = fragment_shader_header
-        + STRINGIFY(
-            uniform sampler2D src_tex_unit0;
-
-            IN vec2 texCoordVarying;
-
-            // used in a few inversions
-            const vec3 one = vec3(1.0);
-
-            // controls the interpolation curve ([1..n], 1.0 = linear, 2.0 = default quadratic)
-            uniform float exponent; // try: 2.0;
-            // controls the center of interpolation ([0..1], 0.5 = linear)
-            uniform vec3 luminance; // try: vec3(0.5);
-            // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
-            uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
-            // controls blending area at left, top, right and bottom in percentages ([0..0.5])
-            uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
-            uniform int w; uniform int h;
-
-            void main() {
-                // initialize coordinates and colors
-                vec2 uv = uv = varyingtexcoord.xy / varyingtexcoord.z;
-                ;
-                vec4 col = TEXTURE(src_tex_unit0, texCoordVarying);
-
-                // calculate edge blending factor
-                float a = 1.0;
-                if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w)) / edges.x, 0.0, 1.0);
-                if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h)) / edges.y, 0.0, 1.0);
-                if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w))) / edges.z, 0.0, 1.0);
-                if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h))) / edges.w, 0.0, 1.0);
-
-                // blend function with luminance control (for each of the 3 channels)
-                vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
-                                       : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
-
-                // gamma correction (for each of the 3 channels)
-                blend = pow(blend, one / gamma);
-
-                // set final color
-                FRAG_COLOR = vec4(col.rgb * blend, col.a * 1.0);
-            });
-
     void QuadSurface::setupShaders()
     {
         glESVertexShader = STRINGIFY(
@@ -801,6 +698,8 @@ namespace piMapper {
     //--------------------------------------------------------------
     void QuadSurface::setupVertexArray()
     {
+        q0 = q1 = q2 = q3 = 1.0;
+
         GLfloat v[] = { getVertex(0).x, getVertex(0).y, getVertex(1).x, getVertex(1).y,
             getVertex(2).x, getVertex(2).y, getVertex(3).x, getVertex(3).y,
             0 * q0, 0 * q0, q0,
@@ -808,37 +707,36 @@ namespace piMapper {
             1 * q2, 1 * q2, q2,
             0 * q3, 1 * q3, q3 };
 
-        //glGenVertexArrays(1, &const_cast<QuadSurface*>(this)->VAO);
-        glGenBuffers(1, &VBO);
-        //glBindVertexArray(VAO);
-
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        ofLogNotice() << "Bound VBO";
-        glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
-
-#ifdef TARGET_OPENGLES
-        //ofLogNotice() << "Try to enable v3PosAttributeIndex";
-        //glEnableVertexAttribArray(v3PosAttributeIndex);
-        //glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-#else
-        glEnableVertexAttribArray(0);
-        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+#ifndef TARGET_OPENGLES
+        if (ofIsGLProgrammableRenderer()) {
+            glGenVertexArrays(1, &const_cast<QuadSurface*>(this)->VAO);
+        }
 #endif
 
-#ifdef TARGET_OPENGLES
-        //ofLogNotice() << "Try to enable v3TexAttributeIndex";
-        //glEnableVertexAttribArray(v3TexAttributeIndex);
-        //glVertexAttribPointer(v3TexAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-        //ofLogNotice() << "Enabled v3TexAttributeIndex!";
-#else
+        glGenBuffers(1, &VBO);
+
+#ifndef TARGET_OPENGLES
+        if (ofIsGLProgrammableRenderer()) {
+            glBindVertexArray(VAO);
+        }
+#endif
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
+
+#ifndef TARGET_OPENGLES
+        glEnableVertexAttribArray(0);
+        glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
         glEnableVertexAttribArray(3);
         glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
 #endif
         glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-        //glBindVertexArray(0);
-
-        ofLogNotice() << "End setup Vertex Array";
+#ifndef TARGET_OPENGLES
+        if (ofIsGLProgrammableRenderer()) {
+            glBindVertexArray(0);
+        }
+#endif
     }
 
     //--------------------------------------------------------------

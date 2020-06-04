@@ -8,7 +8,7 @@ int main(){
     settings.glesVersion = 2;
 #else
     ofGLWindowSettings settings;
-    settings.setGLVersion(3,3);
+    settings.setGLVersion(2,1);
 #endif
     settings.setSize(1024,768);
     settings.windowMode = OF_WINDOW;
