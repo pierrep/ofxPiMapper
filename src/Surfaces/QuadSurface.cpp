@@ -7,6 +7,7 @@ namespace piMapper {
     {
         _perspectiveWarping = false;
         _edgeBlendingMode = false;
+        _texcoordsChanged = false;
         edges = ofVec4f::zero();
         setup();
     }
@@ -88,6 +89,11 @@ namespace piMapper {
                 meshChanged = true;
             }
 
+            if (_texcoordsChanged) {
+                meshChanged = true;
+                _texcoordsChanged = false;
+            }
+
             //            ofRectangle box = getMeshBoundingBox();
             //            ofMesh m = mesh;
 
@@ -113,6 +119,7 @@ namespace piMapper {
             shader.setUniform1i("w", 1);
             shader.setUniform1i("h", 1);
             shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+            shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
@@ -150,10 +157,11 @@ namespace piMapper {
 
                 shader.begin();
                 shader.setUniformTexture("tex", *(source->getTexture()), 0);
-                shader.setUniform1i("edgeBlend", _edgeBlendingMode ? 1 : 0);
+                shader.setUniform1i("edgeBlend", _edgeBlendingMode ? true : false);
                 shader.setUniform1i("w", 1);
                 shader.setUniform1i("h", 1);
                 shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+                shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
 
                 glBindVertexArray(VAO);
                 glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // 0 = the starting index in the enabled arrays; 4 = the number of indices to be rendered.
@@ -192,6 +200,7 @@ namespace piMapper {
                         shader.setUniform1i("w", source->getTexture()->getWidth());
                         shader.setUniform1i("h", source->getTexture()->getHeight());
                         shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+                        shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
                     }
                     source->getTexture()->bind();
                     m.draw();
@@ -260,6 +269,9 @@ namespace piMapper {
         }
 
         mesh.setTexCoord(index, t.toOf());
+        if (ofIsGLProgrammableRenderer()) {
+            _texcoordsChanged = true;
+        }
     }
 
     void QuadSurface::setTexCoords(std::vector<Vec2> t)
@@ -269,6 +281,9 @@ namespace piMapper {
         }
         for (int i = 0; i < 4; ++i) {
             mesh.setTexCoord(i, t[i].toOf());
+        }
+        if (ofIsGLProgrammableRenderer()) {
+            _texcoordsChanged = true;
         }
     }
 
@@ -489,6 +504,7 @@ namespace piMapper {
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
             // controls blending area at left, top, right and bottom in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
+            uniform vec4 texoffset;
             uniform int w;
             uniform int h;
             uniform int edgeBlend;
@@ -497,30 +513,30 @@ namespace piMapper {
                 vec2 uv = texCoordVarying.xy / texCoordVarying.z;
                 vec4 col = texture2D(tex, uv);
 
+                vec3 blend = vec3(1.0, 1.0, 1.0);
+
                 // calculate edge blending factor
-                float a = 1.0;
-                if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w)) / edges.x, 0.0, 1.0);
-                if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h)) / edges.y, 0.0, 1.0);
-                if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w))) / edges.z, 0.0, 1.0);
-                if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h))) / edges.w, 0.0, 1.0);
+                if (edgeBlend) {
+                    float a = 1.0;
+                    if (edges.x > 0.0)
+                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
+                    if (edges.y > 0.0)
+                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
+                    if (edges.z > 0.0)
+                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
+                    if (edges.w > 0.0)
+                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
 
-                // blend function with luminance control (for each of the 3 channels)
-                vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
-                                       : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
+                    // blend function with luminance control (for each of the 3 channels)
+                    blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
+                                      : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
 
-                // gamma correction (for each of the 3 channels)
-                blend = pow(blend, one / gamma);
-                if (edgeBlend == 0)
-                    blend = vec3(1.0, 1.0, 1.0);
+                    // gamma correction (for each of the 3 channels)
+                    blend = pow(blend, one / gamma);
+                }
 
                 // set final color
                 gl_FragColor = vec4(col.rgb * blend, col.a * 1.0);
-                //gl_FragColor = vec4(vec3(1.0,0,0) * blend, col.a * 1.0);
-                //gl_FragColor = vec4(col);
             });
 
         gl3VertexShader = "#version 330\n";
@@ -553,8 +569,10 @@ namespace piMapper {
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
             // controls blending area at left, top, right and bottom in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
+            uniform vec4 texoffset;
             uniform int w;
             uniform int h;
+            uniform bool edgeBlend;
             in vec3 texCoordVarying;
             out vec4 fragColor;
 
@@ -563,23 +581,27 @@ namespace piMapper {
                 vec2 uv = texCoordVarying.xy / texCoordVarying.z;
                 vec4 col = texture(tex0, uv);
 
+                vec3 blend = vec3(1.0, 1.0, 1.0);
+
                 // calculate edge blending factor
-                float a = 1.0;
-                if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w)) / edges.x, 0.0, 1.0);
-                if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h)) / edges.y, 0.0, 1.0);
-                if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w))) / edges.z, 0.0, 1.0);
-                if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h))) / edges.w, 0.0, 1.0);
+                if (edgeBlend) {
+                    float a = 1.0;
+                    if (edges.x > 0.0)
+                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
+                    if (edges.y > 0.0)
+                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
+                    if (edges.z > 0.0)
+                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
+                    if (edges.w > 0.0)
+                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
 
-                // blend function with luminance control (for each of the 3 channels)
-                vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
-                                       : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
+                    // blend function with luminance control (for each of the 3 channels)
+                    blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
+                                           : one - (one - luminance) * pow(2.0 * (1.0 - a), exponent);
 
-                // gamma correction (for each of the 3 channels)
-                blend = pow(blend, one / gamma);
+                    // gamma correction (for each of the 3 channels)
+                    blend = pow(blend, one / gamma);
+                }
 
                 // set final color
                 fragColor = vec4(col.rgb * blend, col.a * 1.0);
@@ -600,6 +622,7 @@ namespace piMapper {
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
             // controls blending area at left, top, right and bottom in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
+            uniform vec4 texoffset;
             uniform int w;
             uniform int h;
 
@@ -610,13 +633,13 @@ namespace piMapper {
                 // calculate edge blending factor
                 float a = 1.0;
                 if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w)) / edges.x, 0.0, 1.0);
+                    a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
                 if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h)) / edges.y, 0.0, 1.0);
+                    a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
                 if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w))) / edges.z, 0.0, 1.0);
+                    a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
                 if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h))) / edges.w, 0.0, 1.0);
+                    a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
 
                 // blend function with luminance control (for each of the 3 channels)
                 vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
@@ -641,8 +664,6 @@ namespace piMapper {
 
         v3PosAttributeIndex = glGetAttribLocation(shader.getProgram(), "position");
         v3TexAttributeIndex = glGetAttribLocation(shader.getProgram(), "texcoord");
-        cout << "v3PosAttributeIndex: " << v3PosAttributeIndex << endl;
-        cout << "v3TexAttributeIndex: " << v3TexAttributeIndex << endl;
 #else
         if (ofIsGLProgrammableRenderer()) {
             shader.setupShaderFromSource(GL_VERTEX_SHADER, gl3VertexShader);
@@ -702,10 +723,10 @@ namespace piMapper {
 
         GLfloat v[] = { getVertex(0).x, getVertex(0).y, getVertex(1).x, getVertex(1).y,
             getVertex(2).x, getVertex(2).y, getVertex(3).x, getVertex(3).y,
-            0 * q0, 0 * q0, q0,
-            1 * q1, 0 * q1, q1,
-            1 * q2, 1 * q2, q2,
-            0 * q3, 1 * q3, q3 };
+            getTexCoord(0).x * q0, getTexCoord(0).y * q0, q0,
+            getTexCoord(1).x * q1, getTexCoord(1).y * q1, q1,
+            getTexCoord(2).x * q2, getTexCoord(2).y * q2, q2,
+            getTexCoord(3).x * q3, getTexCoord(3).y * q3, q3 };
 
 #ifndef TARGET_OPENGLES
         if (ofIsGLProgrammableRenderer()) {
@@ -744,10 +765,10 @@ namespace piMapper {
     {
         GLfloat v[] = { getVertex(0).x, getVertex(0).y, getVertex(1).x, getVertex(1).y,
             getVertex(2).x, getVertex(2).y, getVertex(3).x, getVertex(3).y,
-            0 * q0, 0 * q0, q0,
-            1 * q1, 0 * q1, q1,
-            1 * q2, 1 * q2, q2,
-            0 * q3, 1 * q3, q3 };
+            getTexCoord(0).x * q0, getTexCoord(0).y * q0, q0,
+            getTexCoord(1).x * q1, getTexCoord(1).y * q1, q1,
+            getTexCoord(2).x * q2, getTexCoord(2).y * q2, q2,
+            getTexCoord(3).x * q3, getTexCoord(3).y * q3, q3 };
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO);
         glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);

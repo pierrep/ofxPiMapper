@@ -3,12 +3,13 @@
 
 int main(){
     //ofSetLogLevel(OF_LOG_VERBOSE);
+
 #ifdef TARGET_OPENGLES
     ofGLESWindowSettings settings;
     settings.glesVersion = 2;
 #else
     ofGLWindowSettings settings;
-    settings.setGLVersion(2,1);
+    settings.setGLVersion(3,2);
 #endif
     settings.setSize(1024,768);
     settings.windowMode = OF_WINDOW;

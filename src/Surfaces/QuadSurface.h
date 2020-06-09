@@ -64,11 +64,13 @@ class QuadSurface : public BaseSurface {
         ofVec4f edges;     
 
         GLuint VBO, VAO;
-        float q0, q1, q2, q3;        
+        float q0, q1, q2, q3;
+        bool _texcoordsChanged;
 
-        //GLES2 only
+#ifdef TARGET_OPENGLES
         GLint v3PosAttributeIndex;
         GLint v3TexAttributeIndex;
+#endif
 
 };
 
