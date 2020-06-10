@@ -324,23 +324,29 @@ namespace piMapper {
         return Vec3(
             mesh.getVertex(index).x,
             mesh.getVertex(index).y,
-            mesh.getVertex(index).z);eee
+            mesh.getVertex(index).z);
+    }
+
+    Vec2 QuadSurface::getTexCoord(int index)
+    {
+        if (index > 3) {            
             throw runtime_error("Texture coordinate index out of bounds.");
         }
 
         return Vec2(
             mesh.getTexCoord(index).x,
             mesh.getTexCoord(index).y);
-    }4313
+    }
 
-    ofPolyline QuadSurface::getHitArea()q
+    ofPolyline QuadSurface::getHitArea()
     {
         ofPolyline line;
-3eeeee
-        line.addVertex(ofPoint(mesh.getVertex(0).x, mesh.getVertex(0).y));ee2
+
+        line.addVertex(ofPoint(mesh.getVertex(0).x, mesh.getVertex(0).y));
+        line.addVertex(ofPoint(mesh.getVertex(1).x, mesh.getVertex(1).y));
         line.addVertex(ofPoint(mesh.getVertex(2).x, mesh.getVertex(2).y));
         line.addVertex(ofPoint(mesh.getVertex(3).x, mesh.getVertex(3).y));
-        line.close();e
+        line.close();
 
         return line;
     }
