@@ -103,45 +103,78 @@ namespace piMapper {
             //            m.setVertex(3, Vec3(0, box.height, 0).toOf());
 
 #ifdef TARGET_OPENGLES
-            if (meshChanged) {
-                calculateQ();
-                updateVertexBuffer();
-                _meshCache = mesh;
+			if (ofIsGLProgrammableRenderer()) {
+				if (meshChanged) {
+					calculateQ();
+					updateVertexBuffer();
+					_meshCache = mesh;
+				}
+
+				ofPushMatrix();
+				bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
+				ofEnableNormalizedTexCoords();
+
+				shader.begin();
+				shader.setUniformTexture("tex", *(source->getTexture()), 0);
+				shader.setUniform1i("edgeBlend", _edgeBlendingMode ? 1 : 0);
+				shader.setUniform1i("w", 1);
+				shader.setUniform1i("h", 1);
+				shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+				shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
+
+				glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+				glEnableVertexAttribArray(v3PosAttributeIndex);
+				glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
+
+				glEnableVertexAttribArray(v3TexAttributeIndex);
+				glVertexAttribPointer(v3TexAttributeIndex, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
+
+				glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // 0 = the starting index in the enabled arrays; 4 = the number of indices to be rendered.
+
+				glDisableVertexAttribArray(v3PosAttributeIndex);
+				glDisableVertexAttribArray(v3TexAttributeIndex);
+				glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+				shader.end();
+
+				if (!normalizedTexCoords) {
+					ofDisableNormalizedTexCoords();
+				}
+
+				ofPopMatrix();
+            
+			} else {
+                if (meshChanged) {
+                    calculateHomography();
+                    _meshCache = mesh;
+                }
+
+                ofRectangle box = getMeshBoundingBox();
+                ofMesh m = mesh;
+
+                m.setVertex(0, Vec3(0, 0, 0).toOf());
+                m.setVertex(1, Vec3(box.width, 0, 0).toOf());
+                m.setVertex(2, Vec3(box.width, box.height, 0).toOf());
+                m.setVertex(3, Vec3(0, box.height, 0).toOf());
+
+                ofPushMatrix();
+                if (true) {
+                    bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
+                    ofEnableNormalizedTexCoords();
+
+                    glMultMatrixf(_matrix);
+
+                    source->getTexture()->bind();
+                    m.draw();
+                    source->getTexture()->unbind();
+  
+                    if (!normalizedTexCoords) {
+                        ofDisableNormalizedTexCoords();
+                    }
+                }
+                ofPopMatrix();
             }
-
-            ofPushMatrix();
-            bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
-            ofEnableNormalizedTexCoords();
-
-            shader.begin();
-            shader.setUniformTexture("tex", *(source->getTexture()), 0);
-            shader.setUniform1i("edgeBlend", _edgeBlendingMode ? 1 : 0);
-            shader.setUniform1i("w", 1);
-            shader.setUniform1i("h", 1);
-            shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
-            shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
-
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-            glEnableVertexAttribArray(v3PosAttributeIndex);
-            glVertexAttribPointer(v3PosAttributeIndex, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), (GLvoid*)0);
-
-            glEnableVertexAttribArray(v3TexAttributeIndex);
-            glVertexAttribPointer(v3TexAttributeIndex, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)(8 * sizeof(GLfloat)));
-
-            glDrawArrays(GL_TRIANGLE_FAN, 0, 4); // 0 = the starting index in the enabled arrays; 4 = the number of indices to be rendered.
-
-            glDisableVertexAttribArray(v3PosAttributeIndex);
-            glDisableVertexAttribArray(v3TexAttributeIndex);
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-            shader.end();
-
-            if (!normalizedTexCoords) {
-                ofDisableNormalizedTexCoords();
-            }
-
-            ofPopMatrix();
 #else
             if (ofIsGLProgrammableRenderer()) {
 
@@ -652,18 +685,20 @@ namespace piMapper {
             });
 
 #ifdef TARGET_OPENGLES
-        ofLogNotice() << "Setting up GLES2 shader for QuadSurface";
-        shader.setupShaderFromSource(GL_VERTEX_SHADER, glESVertexShader);
-        shader.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShader);
-        shader.linkProgram();
-        shader.begin();
-        shader.setUniform1f("exponent", 1.0f);
-        shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
-        shader.setUniform3f("gamma", 1.8, 1.8, 1.8);
-        shader.end();
+		if(ofIsGLProgrammableRenderer()) {
+			ofLogNotice() << "Setting up GLES2 shader for QuadSurface";
+			shader.setupShaderFromSource(GL_VERTEX_SHADER, glESVertexShader);
+			shader.setupShaderFromSource(GL_FRAGMENT_SHADER, glESFragmentShader);
+			shader.linkProgram();
+			shader.begin();
+			shader.setUniform1f("exponent", 1.0f);
+			shader.setUniform3f("luminance", 0.5, 0.5, 0.5);
+			shader.setUniform3f("gamma", 1.8, 1.8, 1.8);
+			shader.end();
 
-        v3PosAttributeIndex = glGetAttribLocation(shader.getProgram(), "position");
-        v3TexAttributeIndex = glGetAttribLocation(shader.getProgram(), "texcoord");
+			v3PosAttributeIndex = glGetAttribLocation(shader.getProgram(), "position");
+			v3TexAttributeIndex = glGetAttribLocation(shader.getProgram(), "texcoord");
+		}
 #else
         if (ofIsGLProgrammableRenderer()) {
             shader.setupShaderFromSource(GL_VERTEX_SHADER, gl3VertexShader);
