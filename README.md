@@ -8,8 +8,7 @@ A number of features are being added as branches to this repository, including a
 
 Development in this fork is generously supported by:
 
-SEHNERV.org
-Verein zur Förderung von Medienkunst 
+[SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst 
 
 ## About this Project
 
