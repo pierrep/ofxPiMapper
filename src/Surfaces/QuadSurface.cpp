@@ -820,7 +820,6 @@ namespace piMapper {
         glBufferData(GL_ARRAY_BUFFER, sizeof(v), v, GL_STATIC_DRAW);
         glBindBuffer(GL_ARRAY_BUFFER, 0);
     }
->>>>>>> EdgeBlend
 
 } // namespace piMapper
 } // namespace ofx
