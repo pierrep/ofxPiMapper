@@ -7,6 +7,7 @@ ProjectionEditorWidget::ProjectionEditorWidget(){
 	surfaceManager = 0;
 	bShiftKeyDown = false;
 	fSnapDistance = 10.0f;
+    bEdgeBlendMode = false;
 }
 
 void ProjectionEditorWidget::update(){
@@ -28,6 +29,25 @@ void ProjectionEditorWidget::update(){
 			break;
 		}
 	}
+
+    for(int i = 0; i < edgeBlendJoints.size(); i++){
+        if(edgeBlendJoints[i]->isDragged() || edgeBlendJoints[i]->isSelected()){
+            if(surfaceManager->getSelectedSurface() != 0){
+                // update Edge Blend joints
+                if(edgeBlendJoints[i]->isDragged()) {
+                    setBlendEdges();
+                    //ofLogNotice() << "Edge blend joint " << i << " left: " << left << " top: " << top << " right: " << right << " bottom: " << bottom;
+
+                }
+            }else{
+                // clear joints if there is no surface selected
+                // as the remove selected surface in the surface manager
+                // is not supposed to access joints here
+                edgeBlendJoints.clear();
+            }
+            break;
+        }
+    }
 }
 
 void ProjectionEditorWidget::draw(){
@@ -41,6 +61,14 @@ void ProjectionEditorWidget::draw(){
 		createJoints();
 	}
 	drawJoints();
+
+    // Soft edge blending
+    if(bEdgeBlendMode) {
+        if(edgeBlendJoints.size() <= 0){
+            createEdgeBlendJoints();
+        }
+        drawEdgeBlendJoints();
+    }
 }
 
 void ProjectionEditorWidget::mouseDragged(ofMouseEventArgs & args){
@@ -49,7 +77,14 @@ void ProjectionEditorWidget::mouseDragged(ofMouseEventArgs & args){
 	for(unsigned int i = 0; i < joints.size(); ++i){
 		joints[i]->mouseDragged(args);
 	}
-	
+
+    // Pass args to joint mouse events
+    if(bEdgeBlendMode) {
+        for(unsigned int i = 0; i < edgeBlendJoints.size(); ++i){
+            edgeBlendJoints[i]->mouseDragged(args);
+        }
+    }
+
 	Vec2 mousePosition = Vec2(args.x, args.y);
 
 	// Collect all vertices of the projection surfaces
@@ -119,6 +154,22 @@ void ProjectionEditorWidget::setSurfaceManager(SurfaceManager * newSurfaceManage
 		&ProjectionEditorWidget::onVertexUnselected);
 }
 
+void ProjectionEditorWidget::setBlendEdges(){
+    if(!bEdgeBlendMode) {
+        return;
+    }
+
+    QuadSurface * quad = dynamic_cast<QuadSurface *>(surfaceManager->getSelectedSurface());
+    float w = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getWidth();
+    float h = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getHeight();
+    float left = (edgeBlendJoints[3]->getDragPosition().x - edgeBlendJoints[3]->position.x)/w;
+    float top = (edgeBlendJoints[0]->getDragPosition().y - edgeBlendJoints[0]->position.y)/h;
+    float right = (edgeBlendJoints[1]->position.x - edgeBlendJoints[1]->getDragPosition().x)/w;
+    float bottom = (edgeBlendJoints[2]->position.y - edgeBlendJoints[2]->getDragPosition().y)/h;
+    quad->setEdges(ofVec4f(left,top,right,bottom));
+
+}
+
 void ProjectionEditorWidget::clearJoints(){
 	while(joints.size()){
 		delete joints.back();
@@ -160,6 +211,13 @@ void ProjectionEditorWidget::unselectAllJoints(){
 	for(int i = 0; i < joints.size(); i++){
 		joints[i]->unselect();
 	}
+
+    if(bEdgeBlendMode) {        //ofEvent <int> edgeBlendJointSelectedEvent;
+        //ofEvent <int> edgeBlendJointUnselectedEvent;
+        for(int i = 0; i < edgeBlendJoints.size(); i++){
+            edgeBlendJoints[i]->unselect();
+        };
+    }
 }
 
 void ProjectionEditorWidget::moveSelectedSurface(Vec3 by){
@@ -173,12 +231,22 @@ void ProjectionEditorWidget::moveSelectedSurface(Vec3 by){
 	
 	surfaceManager->getSelectedSurface()->moveBy(by);
 	updateJoints();
+
+    if(bEdgeBlendMode) {
+       updateEdgeBlendJoints();
+    }
 }
 
 void ProjectionEditorWidget::stopDragJoints(){
 	for(int i = 0; i < joints.size(); i++){
 		joints[i]->stopDrag();
 	}
+
+    if(bEdgeBlendMode) {
+        for(int i = 0; i < edgeBlendJoints.size(); i++){
+            edgeBlendJoints[i]->stopDrag();
+        };
+    }
 }
 
 void ProjectionEditorWidget::setSnapDistance(float newSnapDistance){
@@ -197,8 +265,114 @@ CircleJoint * ProjectionEditorWidget::hitTestJoints(Vec2 pos){
 	return 0;
 }
 
+EdgeBlendJoint * ProjectionEditorWidget::hitTestEdgeBlendJoints(Vec2 pos){
+    if(surfaceManager->getSelectedSurface() == 0){
+        return 0;
+    }
+    if(!bEdgeBlendMode){
+        return 0;
+    }
+    for(int i = 0; i < edgeBlendJoints.size(); i++){
+        if(edgeBlendJoints[i]->hitTest(pos)){
+            return edgeBlendJoints[i];
+        }
+    }
+    return 0;
+}
+
 std::vector<CircleJoint *> * ProjectionEditorWidget::getJoints(){
 	return &joints;
+}
+
+const bool ProjectionEditorWidget::getEdgeBlendMode(){
+    return bEdgeBlendMode;
+}
+
+void ProjectionEditorWidget::toggleEdgeBlend(){
+    if(surfaceManager->getSelectedSurface() == 0){
+        return;
+    }
+    if(surfaceManager->getSelectedSurface()->getType() == SurfaceType::QUAD_SURFACE){
+        bEdgeBlendMode = !bEdgeBlendMode;        
+        QuadSurface * quad = dynamic_cast<QuadSurface *>(surfaceManager->getSelectedSurface());
+        quad->setEdgeBlendMode(bEdgeBlendMode);
+    }
+}
+
+void ProjectionEditorWidget::clearEdgeBlendJoints(){
+    while(edgeBlendJoints.size()){
+        delete edgeBlendJoints.back();
+        edgeBlendJoints.pop_back();
+    }
+}
+
+void ProjectionEditorWidget::createEdgeBlendJoints(){
+    if(surfaceManager == 0){
+        return;
+    }
+    clearEdgeBlendJoints();
+
+    if(surfaceManager->getSelectedSurface() == 0){
+        ofLog(OF_LOG_WARNING, "Trying to create edge blend joints while no surface selected.");
+        return;
+    }
+
+    std::vector<Vec3> vertices = surfaceManager->getSelectedSurface()->getVertices();
+
+    for(int i = 0; i < vertices.size(); i++){
+        edgeBlendJoints.push_back(new EdgeBlendJoint());
+        int j = (i+1) % vertices.size();
+        float x = (vertices[i].x + vertices[j].x)/2.0f;
+        float y = (vertices[i].y + vertices[j].y)/2.0f;
+        edgeBlendJoints.at(i)->position = Vec2(x,y);
+        edgeBlendJoints.at(i)->setDragPosition(Vec2(x,y));
+    }
+}
+
+void ProjectionEditorWidget::updateEdgeBlendJoints(){
+    if(surfaceManager->getSelectedSurface()){
+        std::vector<Vec3> vertices = surfaceManager->getSelectedSurface()->getVertices();
+
+        for(int i = 0; i < vertices.size(); i++){
+            int j = (i+1) % vertices.size();
+            float x = (vertices[i].x + vertices[j].x)/2.0f;
+            float y = (vertices[i].y + vertices[j].y)/2.0f;
+            edgeBlendJoints.at(i)->position = Vec2(x,y);
+        }
+    }
+
+}
+
+std::vector<EdgeBlendJoint *> * ProjectionEditorWidget::getEdgeBlendJoints(){
+    return &edgeBlendJoints;
+}
+
+int ProjectionEditorWidget::getSelectedEdgeBlendJoint(){
+    for(int i = 0; i < edgeBlendJoints.size(); i++){
+        if(edgeBlendJoints[i]->selected){
+            return i;
+        }
+    }
+    return -1;
+}
+
+void ProjectionEditorWidget::selectEdgeBlendJoint(int index)
+{
+    if(getJoints()->size() == 0){
+        return;
+    }
+
+    unselectAllJoints();
+    getEdgeBlendJoints()->at(index)->select();
+}
+
+void ProjectionEditorWidget::unselectEdgeBlendJoint(int index)
+{
+    if(getJoints()->size() == 0){
+        return;
+    }
+
+    unselectAllJoints();
 }
 
 void ProjectionEditorWidget::onVertexChanged(int & i){
@@ -210,14 +384,26 @@ void ProjectionEditorWidget::onVertexChanged(int & i){
 	}else{
 		getJoints()->at(i)->stopDrag();
 	}
+
+    if(bEdgeBlendMode) {
+        createEdgeBlendJoints();
+    }
 }
 
 void ProjectionEditorWidget::onVerticesChanged(std::vector<Vec3> & vertices){
 	createJoints();
+
+    if(bEdgeBlendMode) {
+        createEdgeBlendJoints();
+    }
 }
 
 void ProjectionEditorWidget::onSurfaceSelected(int & surfaceIndex){
 	createJoints();
+
+    if(bEdgeBlendMode) {
+        createEdgeBlendJoints();
+    }
 }
 
 void ProjectionEditorWidget::onVertexSelected(int & vertexIndex){
@@ -241,6 +427,12 @@ void ProjectionEditorWidget::drawJoints(){
 	for(int i = 0; i < joints.size(); i++){
 		joints[i]->draw();
 	}
+}
+
+void ProjectionEditorWidget::drawEdgeBlendJoints(){
+    for(int i = 0; i < edgeBlendJoints.size(); i++){
+        edgeBlendJoints[i]->draw();
+    }
 }
 
 } // namespace piMapper

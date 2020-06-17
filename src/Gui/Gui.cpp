@@ -41,6 +41,27 @@ void Gui::notifyJointDragged(ofMouseEventArgs & args, int jointIndex){
 	ofNotifyEvent(jointDraggedEvent, e, this);
 }
 
+void Gui::notifyEdgeBlendJointPressed(ofMouseEventArgs & args, int jointIndex){
+    GuiJointEvent e;
+    e.args = args;
+    e.jointIndex = jointIndex;
+    ofNotifyEvent(edgeBlendJointPressedEvent, e, this);
+}
+
+void Gui::notifyEdgeBlendJointReleased(ofMouseEventArgs & args, int jointIndex){
+    GuiJointEvent e;
+    e.args = args;
+    e.jointIndex = jointIndex;
+    ofNotifyEvent(edgeBlendJointReleasedEvent, e, this);
+}
+
+void Gui::notifyEdgeBlendJointDragged(ofMouseEventArgs & args, int jointIndex){
+    GuiJointEvent e;
+    e.args = args;
+    e.jointIndex = jointIndex;
+    ofNotifyEvent(edgeBlendJointDraggedEvent, e, this);
+}
+
 void Gui::notifySurfacePressed(ofMouseEventArgs & args, BaseSurface * surface){
 	GuiSurfaceEvent e;
 	e.args = args;

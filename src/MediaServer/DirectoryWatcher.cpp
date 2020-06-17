@@ -42,8 +42,9 @@ DirectoryWatcher::DirectoryWatcher(std::string path, int watcherMediaType){
 }
 
 DirectoryWatcher::~DirectoryWatcher() {
-	if(isThreadRunning()){
+	if(isThreadRunning()){        
 		stopThread();
+        waitForThread();
 	}
 }
 

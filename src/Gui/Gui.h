@@ -53,6 +53,14 @@ class Gui {
 		void notifyJointPressed(ofMouseEventArgs & args, int jointIndex);
 		void notifyJointReleased(ofMouseEventArgs & args, int jointIndex);
 		void notifyJointDragged(ofMouseEventArgs & args, int jointIndex);
+
+        ofEvent <GuiJointEvent> edgeBlendJointPressedEvent;
+        ofEvent <GuiJointEvent> edgeBlendJointReleasedEvent;
+        ofEvent <GuiJointEvent> edgeBlendJointDraggedEvent;
+
+        void notifyEdgeBlendJointPressed(ofMouseEventArgs & args, int jointIndex);
+        void notifyEdgeBlendJointReleased(ofMouseEventArgs & args, int jointIndex);
+        void notifyEdgeBlendJointDragged(ofMouseEventArgs & args, int jointIndex);
 	
 		ofEvent <GuiSurfaceEvent> surfacePressedEvent;
 		ofEvent <GuiSurfaceEvent> surfaceReleasedEvent;

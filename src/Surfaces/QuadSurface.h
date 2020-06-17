@@ -36,18 +36,43 @@ class QuadSurface : public BaseSurface {
 		ofPolyline getTextureHitArea();
 		std::vector<Vec3> getVertices();
 		std::vector<Vec2> getTexCoords();
+        void setEdges(ofVec4f _edges);
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
+        void setEdgeBlendMode(bool b);
 	
 		ofRectangle getMeshBoundingBox();
 		BaseSurface * clone();
 
 	private:
 		void calculateHomography();
+        void setupShaders();
+        void setupVertexArray();
+        void updateVertexBuffer();
+        void calculateQ();
+
 		float _matrix[16];
 		bool _perspectiveWarping;
+        bool _edgeBlendingMode;
 		ofMesh _meshCache;
+        ofShader shader;
+        string glESVertexShader;
+        string glESFragmentShader;
+        string gl3VertexShader;
+        string gl3FragmentShader;
+        string gl2FragmentShader;
+        ofVec4f edges;     
+
+        GLuint VBO, VAO;
+        float q0, q1, q2, q3;
+        bool _texcoordsChanged;
+
+#ifdef TARGET_OPENGLES
+        GLint v3PosAttributeIndex;
+        GLint v3TexAttributeIndex;
+#endif
+
 };
 
 } // namespace piMapper

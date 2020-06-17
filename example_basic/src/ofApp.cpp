@@ -10,11 +10,13 @@ void ofApp::setup(){
 }
 
 void ofApp::update(){
-	mapper.update();
+    mapper.update();
 }
 
-void ofApp::draw(){
+void ofApp::draw(){    
 	mapper.draw();
+
+    ofDrawBitmapString(ofToString(ofGetFrameRate()), 20, ofGetHeight()-20);
 }
 
 void ofApp::keyPressed(int key){

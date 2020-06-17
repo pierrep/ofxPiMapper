@@ -6,6 +6,7 @@
 #include "StartDragSurfaceCmd.h"
 #include "DeselectSurfaceCmd.h"
 #include "MvSurfaceVertCmd.h"
+#include "MvSurfaceEdgeBlendJointCmd.h"
 #include "SurfaceType.h"
 #include "Gui.h"
 #include "ScaleWidget.h"
@@ -31,6 +32,7 @@ class ProjectionMappingMode : public ApplicationBaseMode {
 		void onMouseReleased(Application * app, ofMouseEventArgs & args);
 		void onMouseDragged(Application * app, ofMouseEventArgs & args);
 		void onJointPressed(Application * app, GuiJointEvent & e);
+        void onEdgeBlendJointPressed(Application * app, GuiJointEvent & e);
 		void onSurfacePressed(Application * app, GuiSurfaceEvent & e);
 		void onBackgroundPressed(Application * app, GuiBackgroundEvent & e);
 	

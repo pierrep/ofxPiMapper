@@ -9,14 +9,14 @@ DeselectSurfaceCmd::DeselectSurfaceCmd(SurfaceManager * sm){
 }
 
 void DeselectSurfaceCmd::exec(){
-	ofLogNotice("DeselectSurfaceCmd", "exec");
+    ofLogVerbose("DeselectSurfaceCmd", "exec");
 	_surface = _surfaceManager->getSelectedSurface();
 	_selectedVertexIndex = _surfaceManager->getSelectedVertexIndex();
 	_surfaceManager->deselectSurface();
 }
 
 void DeselectSurfaceCmd::undo(){
-	ofLogNotice("DeselectSurfaceCmd", "undo");
+    ofLogVerbose("DeselectSurfaceCmd", "undo");
 	_surfaceManager->selectSurface(_surface);
 	_surfaceManager->selectVertex(_selectedVertexIndex);
 }
