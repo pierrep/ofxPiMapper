@@ -2,6 +2,16 @@
 
 [![Join the chat at https://gitter.im/kr15h/ofxPiMapper](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kr15h/ofxPiMapper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge) [![Build Status](https://travis-ci.org/kr15h/ofxPiMapper.svg?branch=master)](https://travis-ci.org/kr15h/ofxPiMapper) [![Build status](https://ci.appveyor.com/api/projects/status/j6mn85tt2agk4dk6?svg=true)](https://ci.appveyor.com/project/kr15h/ofxpimapper)
 
+## Notes on this fork
+
+A number of features are being added as branches to this repository, including a GLES2 implementation of the original ofxPiMapper project. Compatibility is being maintained with the GLES1 code path.
+
+Development in this fork is generously supported by:
+
+[SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst 
+
+## About this Project
+
 Projection mapping addon for openFrameworks that runs on the Raspberry Pi.
 
 The project started as master's thesis project by [Krisjanis Rijnieks](https://rijnieks.com) at the [Helsinki Media Lab](https://medialab.aalto.fi/). Currently undergoing changes. Expect the API to be incompatible with your projects from the past or present-day.
