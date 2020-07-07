@@ -22,7 +22,6 @@ void MvSurfaceEdgeBlendJointCmd::exec(){
 }
 
 void MvSurfaceEdgeBlendJointCmd::undo(){
-    ofLogVerbose("MvSurfaceVertCommand", "undo");
     _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->setDragPosition(_prevJointPos);
     float x = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.x;
     float y = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.y;
