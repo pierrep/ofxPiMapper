@@ -16,17 +16,13 @@ void MvSurfaceEdgeBlendJointCmd::exec(){
     }
 
     _prevJointPos = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->getDragPosition();
-    float x = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.x;
-    float y = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.y;
-    ofLogVerbose("MvSurfaceEdgeBlendJointCmd") << "position -> x: " << x << " y: " << y << " dragPosion -> x:" << _prevJointPos.x << " y:" << _prevJointPos.y;
+    //float x = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.x;
+    //float y = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.y;
 }
 
 void MvSurfaceEdgeBlendJointCmd::undo(){
     _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->setDragPosition(_prevJointPos);
-    float x = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.x;
-    float y = _projectionEditorWidget->getEdgeBlendJoints()->at(_jointIndex)->position.y;
     _projectionEditorWidget->setBlendEdges();
-    ofLogVerbose("MvSurfaceEdgeBlendJointCmd Undo") << "position -> x: " << x << " y: " << y << " dragPosion -> x:" << _prevJointPos.x << " y:" << _prevJointPos.y;
 
     if(_prevJointIndex != -1) {
         _projectionEditorWidget->selectEdgeBlendJoint(_prevJointIndex);

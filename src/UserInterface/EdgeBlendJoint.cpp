@@ -73,7 +73,6 @@ void EdgeBlendJoint::mouseDragged(ofMouseEventArgs & args){
         return;
     }
     dragPosition = Vec2(args.x, args.y) + clickDistance;
-    //ofLogNotice() << "Edge Blend Joint dragging...  x: " << dragPosition.x << " y: " << dragPosition.y;
 }
 
 bool EdgeBlendJoint::hitTest(Vec2 pos){

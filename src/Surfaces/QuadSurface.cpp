@@ -6,7 +6,7 @@ namespace piMapper {
     QuadSurface::QuadSurface()
     {
         _perspectiveWarping = false;
-        _edgeBlendingMode = false;
+        _edgeBlending = false;
         _texcoordsChanged = false;
         edges = ofVec4f::zero();
         setup();
@@ -116,7 +116,7 @@ namespace piMapper {
 
 				shader.begin();
 				shader.setUniformTexture("tex", *(source->getTexture()), 0);
-				shader.setUniform1i("edgeBlend", _edgeBlendingMode ? 1 : 0);
+                shader.setUniform1i("edgeBlend", _edgeBlending ? 1 : 0);
 				shader.setUniform1i("w", 1);
 				shader.setUniform1i("h", 1);
 				shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
@@ -190,7 +190,7 @@ namespace piMapper {
 
                 shader.begin();
                 shader.setUniformTexture("tex", *(source->getTexture()), 0);
-                shader.setUniform1i("edgeBlend", _edgeBlendingMode ? true : false);
+                shader.setUniform1i("edgeBlend", _edgeBlending ? true : false);
                 shader.setUniform1i("w", 1);
                 shader.setUniform1i("h", 1);
                 shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
@@ -227,7 +227,7 @@ namespace piMapper {
                     ofEnableNormalizedTexCoords();
 
                     glMultMatrixf(_matrix);
-                    if (_edgeBlendingMode) {
+                    if (_edgeBlending) {
                         shader.begin();
                         shader.setUniformTexture("tex0", *(source->getTexture()), 0);
                         shader.setUniform1i("w", source->getTexture()->getWidth());
@@ -238,7 +238,7 @@ namespace piMapper {
                     source->getTexture()->bind();
                     m.draw();
                     source->getTexture()->unbind();
-                    if (_edgeBlendingMode) {
+                    if (_edgeBlending) {
                         shader.end();
                     }
 
@@ -454,6 +454,11 @@ namespace piMapper {
     void QuadSurface::setEdges(ofVec4f _edges)
     {
         edges = _edges;
+    }    
+
+    ofVec4f QuadSurface::getEdges()
+    {
+        return edges;
     }
 
     void QuadSurface::setPerspectiveWarping(bool b)
@@ -466,9 +471,14 @@ namespace piMapper {
         return _perspectiveWarping;
     }
 
-    void QuadSurface::setEdgeBlendMode(bool b)
+    void QuadSurface::setEdgeBlending(bool b)
     {
-        _edgeBlendingMode = b;
+        _edgeBlending = b;
+    }
+
+    bool QuadSurface::getEdgeBlending()
+    {
+        return _edgeBlending;
     }
 
     ofRectangle QuadSurface::getMeshBoundingBox()

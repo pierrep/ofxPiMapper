@@ -36,11 +36,14 @@ class QuadSurface : public BaseSurface {
 		ofPolyline getTextureHitArea();
 		std::vector<Vec3> getVertices();
 		std::vector<Vec2> getTexCoords();
+
         void setEdges(ofVec4f _edges);
+        ofVec4f getEdges();
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
-        void setEdgeBlendMode(bool b);
+        void setEdgeBlending(bool b);
+        bool getEdgeBlending();
 	
 		ofRectangle getMeshBoundingBox();
 		BaseSurface * clone();
@@ -54,7 +57,7 @@ class QuadSurface : public BaseSurface {
 
 		float _matrix[16];
 		bool _perspectiveWarping;
-        bool _edgeBlendingMode;
+        bool _edgeBlending;
 		ofMesh _meshCache;
         ofShader shader;
         string glESVertexShader;

@@ -33,7 +33,7 @@ class ProjectionEditorWidget {
         EdgeBlendJoint * hitTestEdgeBlendJoints(Vec2 pos);
 		std::vector<CircleJoint *> * getJoints();
         const bool getEdgeBlendMode();
-        void toggleEdgeBlend();
+        void toggleEdgeBlendMode();
         void clearEdgeBlendJoints();
         void createEdgeBlendJoints();
         void updateEdgeBlendJoints();
@@ -56,6 +56,7 @@ class ProjectionEditorWidget {
 		bool bShiftKeyDown;
 		float fSnapDistance;
         bool bEdgeBlendMode;
+        bool bEnableEdgeBlend;
 
 		void drawJoints();
         void drawEdgeBlendJoints();

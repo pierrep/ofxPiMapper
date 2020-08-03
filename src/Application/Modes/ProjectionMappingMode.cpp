@@ -181,7 +181,7 @@ void ProjectionMappingMode::onKeyPressed(Application * app, ofKeyEventArgs & arg
 		 break;
 
      case 'e':
-         Gui::instance()->getProjectionEditorWidget().toggleEdgeBlend();
+         Gui::instance()->getProjectionEditorWidget().toggleEdgeBlendMode();
        break;
 
 	/*

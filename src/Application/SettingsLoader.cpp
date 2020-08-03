@@ -243,6 +243,16 @@ bool SettingsLoader::save(SurfaceManager & surfaceManager, std::string fileName)
 			}
 			xmlSettings->pushTag("properties");
 			xmlSettings->addValue("perspectiveWarping", qs->getPerspectiveWarping());
+            xmlSettings->addValue("edgeBlending", qs->getEdgeBlending());
+            if(qs->getEdgeBlending()) {
+                xmlSettings->addTag("blendJointCoords");
+                xmlSettings->pushTag("blendJointCoords");
+                xmlSettings->addValue("left", qs->getEdges().x);
+                xmlSettings->addValue("top", qs->getEdges().y);
+                xmlSettings->addValue("right", qs->getEdges().z);
+                xmlSettings->addValue("botoom", qs->getEdges().w);
+                xmlSettings->popTag(); // texCoord
+            }
 			xmlSettings->popTag(); // properties
 		}else if(surface->getType() == SurfaceType::GRID_WARP_SURFACE){
 			GridWarpSurface * gws = (GridWarpSurface *)surface;
@@ -436,13 +446,37 @@ BaseSurface * SettingsLoader::getQuadSurface(ofxXmlSettings * xmlSettings){
 	// Read properties
 	// Only perspective warping for now
 	bool perspectiveWarping = false;
+    bool edgeBlending = false;
+    ofVec4f joints = ofVec4f::zero();
 	if(xmlSettings->tagExists("properties")){
 		xmlSettings->pushTag("properties");
 		perspectiveWarping = xmlSettings->getValue("perspectiveWarping", false);
+        edgeBlending = xmlSettings->getValue("edgeBlending", false);
+
+        if(edgeBlending && xmlSettings->tagExists("blendJointCoords")){
+            xmlSettings->pushTag("blendJointCoords");
+
+            if(xmlSettings->tagExists("left", 0)){
+                joints.x = xmlSettings->getValue("left", 0.0f);
+            }
+            if(xmlSettings->tagExists("top", 0)){
+                joints.y = xmlSettings->getValue("right", 0.0f);
+            }
+            if(xmlSettings->tagExists("right", 0)){
+                joints.z = xmlSettings->getValue("top", 0.0f);
+            }
+            if(xmlSettings->tagExists("bottom", 0)){
+                joints.w = xmlSettings->getValue("bottom", 0.0f);
+            }
+            xmlSettings->popTag(); // blendJointCoords
+        }
+
 		xmlSettings->popTag(); // properties
 	}
 	QuadSurface * qs = (QuadSurface *)quadSurface;
 	qs->setPerspectiveWarping(perspectiveWarping);
+    qs->setEdgeBlending(edgeBlending);
+    qs->setEdges(joints);
 
 	return quadSurface;
 }
