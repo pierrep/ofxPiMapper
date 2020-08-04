@@ -8,7 +8,7 @@ namespace piMapper {
         _perspectiveWarping = false;
         _edgeBlending = false;
         _texcoordsChanged = false;
-        edges = ofVec4f::zero();
+        blendEdges = ofVec4f::zero();
         setup();
     }
 
@@ -119,7 +119,7 @@ namespace piMapper {
                 shader.setUniform1i("edgeBlend", _edgeBlending ? 1 : 0);
 				shader.setUniform1i("w", 1);
 				shader.setUniform1i("h", 1);
-				shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+                shader.setUniform4f("edges", blendEdges.x, blendEdges.y, blendEdges.z, blendEdges.w);
 				shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
 
 				glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -193,7 +193,7 @@ namespace piMapper {
                 shader.setUniform1i("edgeBlend", _edgeBlending ? true : false);
                 shader.setUniform1i("w", 1);
                 shader.setUniform1i("h", 1);
-                shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+                shader.setUniform4f("edges", blendEdges.x, blendEdges.y, blendEdges.z, blendEdges.w);
                 shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
 
                 glBindVertexArray(VAO);
@@ -232,7 +232,7 @@ namespace piMapper {
                         shader.setUniformTexture("tex0", *(source->getTexture()), 0);
                         shader.setUniform1i("w", source->getTexture()->getWidth());
                         shader.setUniform1i("h", source->getTexture()->getHeight());
-                        shader.setUniform4f("edges", edges.x, edges.y, edges.z, edges.w);
+                        shader.setUniform4f("edges", blendEdges.x, blendEdges.y, blendEdges.z, blendEdges.w);
                         shader.setUniform4f("texoffset", getTexCoords()[0].x, getTexCoords()[1].y, getTexCoords()[2].x, getTexCoords()[3].y);
                     }
                     source->getTexture()->bind();
@@ -451,14 +451,23 @@ namespace piMapper {
         HomographyHelper::findHomography(src, dst, _matrix);
     }
 
-    void QuadSurface::setEdges(ofVec4f _edges)
+    void QuadSurface::setBlendEdges(ofVec4f _edges)
     {
-        edges = _edges;
+        blendEdges = _edges;
     }    
 
-    ofVec4f QuadSurface::getEdges()
+    ofVec4f QuadSurface::getBlendEdges()
     {
-        return edges;
+        return blendEdges;
+    }
+
+    void QuadSurface::setBlendEdge(int index, float value)
+    {
+        if((index < 0) || (index > 3)) {
+            ofLogError() << "Wrong blend index";
+            return;
+        }
+        blendEdges[index] = value;
     }
 
     void QuadSurface::setPerspectiveWarping(bool b)

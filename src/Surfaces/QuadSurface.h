@@ -37,8 +37,9 @@ class QuadSurface : public BaseSurface {
 		std::vector<Vec3> getVertices();
 		std::vector<Vec2> getTexCoords();
 
-        void setEdges(ofVec4f _edges);
-        ofVec4f getEdges();
+        void setBlendEdges(ofVec4f _edges);
+        ofVec4f getBlendEdges();
+        void setBlendEdge(int index, float value);
 	
 		void setPerspectiveWarping(bool b);
 		bool getPerspectiveWarping();
@@ -65,7 +66,7 @@ class QuadSurface : public BaseSurface {
         string gl3VertexShader;
         string gl3FragmentShader;
         string gl2FragmentShader;
-        ofVec4f edges;     
+        ofVec4f blendEdges;
 
         GLuint VBO, VAO;
         float q0, q1, q2, q3;

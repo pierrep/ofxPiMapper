@@ -35,7 +35,7 @@ void ProjectionEditorWidget::update(){
             if(surfaceManager->getSelectedSurface() != 0){
                 // update Edge Blend joints
                 if(edgeBlendJoints[i]->isDragged()) {
-                    setBlendEdges();
+                    setBlendEdge(i);
                 }
             }else{
                 // clear joints if there is no surface selected
@@ -162,17 +162,47 @@ void ProjectionEditorWidget::setBlendEdges(){
     float top = (edgeBlendJoints[0]->getDragPosition().y - edgeBlendJoints[0]->position.y)/h;
     float right = (edgeBlendJoints[1]->position.x - edgeBlendJoints[1]->getDragPosition().x)/w;
     float bottom = (edgeBlendJoints[2]->position.y - edgeBlendJoints[2]->getDragPosition().y)/h;
-    quad->setEdges(ofVec4f(left,top,right,bottom));
-
-    //ofLogNotice() << "setEdges  left: " << left << " top: " << top << " right: " << right << " bottom: " << bottom;
+    quad->setBlendEdges(ofVec4f(left,top,right,bottom));
 
     if((left <= 0.0f) && (top <= 0.0f) && (right <= 0.0f) && (bottom <= 0.0f)) {
-        bEnableEdgeBlend = false;
-        ofLogNotice()<< "Edge blend disabled";
+        bEnableEdgeBlend = false;        
     }
 
     quad->setEdgeBlending(bEnableEdgeBlend);
+}
 
+void ProjectionEditorWidget::setBlendEdge(int index){
+    bEnableEdgeBlend = true;
+
+    QuadSurface * quad = dynamic_cast<QuadSurface *>(surfaceManager->getSelectedSurface());
+    float w = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getWidth();
+    float h = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getHeight();
+    float value = 0;
+
+    if(index == 3) {
+        value = (edgeBlendJoints[3]->getDragPosition().x - edgeBlendJoints[3]->position.x)/w; //left
+    }
+    if(index == 0) {
+        value = (edgeBlendJoints[0]->getDragPosition().y - edgeBlendJoints[0]->position.y)/h; //top
+    }
+    if(index == 1) {
+        value = (edgeBlendJoints[1]->position.x - edgeBlendJoints[1]->getDragPosition().x)/w; // right
+    }
+    if(index == 2) {
+        value = (edgeBlendJoints[2]->position.y - edgeBlendJoints[2]->getDragPosition().y)/h; // bottom
+    }
+
+    index += 1;
+    if(index > 3) index = 0;
+
+    quad->setBlendEdge(index, value);
+
+    ofVec4f edges = quad->getBlendEdges();
+    if((edges.x <= 0.0f) && (edges.y <= 0.0f) && (edges.z <= 0.0f) && (edges.w <= 0.0f)) {
+        bEnableEdgeBlend = false;
+    }
+
+    quad->setEdgeBlending(bEnableEdgeBlend);
 }
 
 void ProjectionEditorWidget::clearJoints(){
@@ -298,7 +328,10 @@ void ProjectionEditorWidget::toggleEdgeBlendMode(){
         return;
     }
     if(surfaceManager->getSelectedSurface()->getType() == SurfaceType::QUAD_SURFACE){
-        bEdgeBlendMode = !bEdgeBlendMode;        
+        bEdgeBlendMode = !bEdgeBlendMode;
+        if(bEdgeBlendMode) {
+            clearEdgeBlendJoints();
+        }
     }
 }
 
@@ -315,13 +348,23 @@ void ProjectionEditorWidget::createEdgeBlendJoints(){
         return;
     }
 
+    clearEdgeBlendJoints();
+
     if(surfaceManager->getSelectedSurface() == 0){
         ofLog(OF_LOG_WARNING, "Trying to create edge blend joints while no surface selected.");
-        clearEdgeBlendJoints();
         return;
     }
 
     //QuadSurface * qs = (QuadSurface *)surfaceManager->getSelectedSurface();
+    QuadSurface * quad = dynamic_cast<QuadSurface *>(surfaceManager->getSelectedSurface());
+    float w = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getWidth();
+    float h = surfaceManager->getSelectedSurface()->getSource()->getTexture()->getHeight();
+//    float left = (edgeBlendJoints[3]->getDragPosition().x - edgeBlendJoints[3]->position.x)/w;
+//    float top = (edgeBlendJoints[0]->getDragPosition().y - edgeBlendJoints[0]->position.y)/h;
+//    float right = (edgeBlendJoints[1]->position.x - edgeBlendJoints[1]->getDragPosition().x)/w;
+//    float bottom = (edgeBlendJoints[2]->position.y - edgeBlendJoints[2]->getDragPosition().y)/h;
+
+
 
     std::vector<Vec3> vertices = surfaceManager->getSelectedSurface()->getVertices();
 
@@ -331,6 +374,17 @@ void ProjectionEditorWidget::createEdgeBlendJoints(){
         float x = (vertices[i].x + vertices[j].x)/2.0f;
         float y = (vertices[i].y + vertices[j].y)/2.0f;
         edgeBlendJoints.at(i)->position = Vec2(x,y);
+
+        if(i == 0) {
+            y = edgeBlendJoints[i]->position.y - (quad->getBlendEdges()[1] * h);
+        } else if(i == 1) {
+            x = edgeBlendJoints[i]->position.x - (quad->getBlendEdges()[2] * w);
+        } else if(i == 2) {
+            y = edgeBlendJoints[i]->position.y - (quad->getBlendEdges()[3] * h);
+        } else if(i == 3) {
+            x = edgeBlendJoints[i]->position.x - (quad->getBlendEdges()[0] * w);
+        }
+
         edgeBlendJoints.at(i)->setDragPosition(Vec2(x,y));
     }
 }
