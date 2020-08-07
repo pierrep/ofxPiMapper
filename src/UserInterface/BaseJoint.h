@@ -10,6 +10,7 @@ class BaseJoint {
 
 	public:
 		BaseJoint();
+        virtual ~BaseJoint() {}
 
 		Vec2 position;
 		bool enabled;

@@ -246,11 +246,11 @@ bool SettingsLoader::save(SurfaceManager & surfaceManager, std::string fileName)
             xmlSettings->addValue("edgeBlending", qs->getEdgeBlending());
             if(qs->getEdgeBlending()) {
                 xmlSettings->addTag("blendJointCoords");
-                xmlSettings->pushTag("blendJointCoords");
-                xmlSettings->addValue("left", qs->getBlendEdges().x);
-                xmlSettings->addValue("top", qs->getBlendEdges().y);
-                xmlSettings->addValue("right", qs->getBlendEdges().z);
-                xmlSettings->addValue("botoom", qs->getBlendEdges().w);
+                xmlSettings->pushTag("blendJointCoords");                
+                xmlSettings->addValue("top", qs->getBlendEdges().x);
+                xmlSettings->addValue("right", qs->getBlendEdges().y);
+                xmlSettings->addValue("bottom", qs->getBlendEdges().z);
+                xmlSettings->addValue("left", qs->getBlendEdges().w);
                 xmlSettings->popTag(); // texCoord
             }
 			xmlSettings->popTag(); // properties
@@ -444,7 +444,6 @@ BaseSurface * SettingsLoader::getQuadSurface(ofxXmlSettings * xmlSettings){
 	quadSurface->setTexCoords(texCoords);
 
 	// Read properties
-	// Only perspective warping for now
 	bool perspectiveWarping = false;
     bool edgeBlending = false;
     ofVec4f blendjoints = ofVec4f::zero();
@@ -456,17 +455,17 @@ BaseSurface * SettingsLoader::getQuadSurface(ofxXmlSettings * xmlSettings){
         if(edgeBlending && xmlSettings->tagExists("blendJointCoords")){
             xmlSettings->pushTag("blendJointCoords");
 
-            if(xmlSettings->tagExists("left", 0)){
-                blendjoints.x = xmlSettings->getValue("left", 0.0f);
-            }
             if(xmlSettings->tagExists("top", 0)){
-                blendjoints.y = xmlSettings->getValue("right", 0.0f);
+                blendjoints.x = xmlSettings->getValue("top", 0.0f);
             }
             if(xmlSettings->tagExists("right", 0)){
-                blendjoints.z = xmlSettings->getValue("top", 0.0f);
+                blendjoints.y = xmlSettings->getValue("right", 0.0f);
             }
             if(xmlSettings->tagExists("bottom", 0)){
-                blendjoints.w = xmlSettings->getValue("bottom", 0.0f);
+                blendjoints.z = xmlSettings->getValue("bottom", 0.0f);
+            }
+            if(xmlSettings->tagExists("left", 0)){
+                blendjoints.w = xmlSettings->getValue("left", 0.0f);
             }
             xmlSettings->popTag(); // blendJointCoords
         }

@@ -454,6 +454,11 @@ namespace piMapper {
     void QuadSurface::setBlendEdges(ofVec4f _edges)
     {
         blendEdges = _edges;
+
+        for(int index = 0; index < 4; index++)
+        {
+            if(blendEdges[index] < 0.0f) blendEdges[index] = 0.0f;
+        }
     }    
 
     ofVec4f QuadSurface::getBlendEdges()
@@ -468,6 +473,7 @@ namespace piMapper {
             return;
         }
         blendEdges[index] = value;
+        if(blendEdges[index] < 0.0f) blendEdges[index] = 0.0f;
     }
 
     void QuadSurface::setPerspectiveWarping(bool b)
@@ -565,7 +571,7 @@ namespace piMapper {
             uniform vec3 luminance; // try: vec3(0.5);
             // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
-            // controls blending area at left, top, right and bottom in percentages ([0..0.5])
+            // controls blending area at top, right, bottom and left in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
             uniform vec4 texoffset;
             uniform int w;
@@ -581,14 +587,14 @@ namespace piMapper {
                 // calculate edge blending factor
                 if (edgeBlend) {
                     float a = 1.0;
-                    if (edges.x > 0.0)
-                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
-                    if (edges.y > 0.0)
-                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
-                    if (edges.z > 0.0)
-                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
                     if (edges.w > 0.0)
-                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
+                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.w, 0.0, 1.0);
+                    if (edges.x > 0.0)
+                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.x, 0.0, 1.0);
+                    if (edges.y > 0.0)
+                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.y, 0.0, 1.0);
+                    if (edges.z > 0.0)
+                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.z, 0.0, 1.0);
 
                     // blend function with luminance control (for each of the 3 channels)
                     blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
@@ -630,7 +636,7 @@ namespace piMapper {
             uniform vec3 luminance; // try: vec3(0.5);
             // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
-            // controls blending area at left, top, right and bottom in percentages ([0..0.5])
+            // controls blending area at top, right, bottom and left in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
             uniform vec4 texoffset;
             uniform int w;
@@ -649,14 +655,14 @@ namespace piMapper {
                 // calculate edge blending factor
                 if (edgeBlend) {
                     float a = 1.0;
-                    if (edges.x > 0.0)
-                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
-                    if (edges.y > 0.0)
-                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
-                    if (edges.z > 0.0)
-                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
                     if (edges.w > 0.0)
-                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
+                        a *= clamp((uv.x / float(w) - texoffset.x) / edges.w, 0.0, 1.0);
+                    if (edges.x > 0.0)
+                        a *= clamp((uv.y / float(h) - texoffset.y) / edges.x, 0.0, 1.0);
+                    if (edges.y > 0.0)
+                        a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.y, 0.0, 1.0);
+                    if (edges.z > 0.0)
+                        a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.z, 0.0, 1.0);
 
                     // blend function with luminance control (for each of the 3 channels)
                     blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
@@ -683,7 +689,7 @@ namespace piMapper {
             uniform vec3 luminance; // try: vec3(0.5);
             // controls gamma levels ([1..n], 1.8 or 2.2 is typical)
             uniform vec3 gamma; // try: vec3(1.8, 1.5, 1.2);
-            // controls blending area at left, top, right and bottom in percentages ([0..0.5])
+            // controls blending area at top, right, bottom and left in percentages ([0..0.5])
             uniform vec4 edges; // try: vec4(0.4, 0.4, 0.0, 0.0);
             uniform vec4 texoffset;
             uniform int w;
@@ -695,14 +701,14 @@ namespace piMapper {
 
                 // calculate edge blending factor
                 float a = 1.0;
-                if (edges.x > 0.0)
-                    a *= clamp((uv.x / float(w) - texoffset.x) / edges.x, 0.0, 1.0);
-                if (edges.y > 0.0)
-                    a *= clamp((uv.y / float(h) - texoffset.y) / edges.y, 0.0, 1.0);
-                if (edges.z > 0.0)
-                    a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.z, 0.0, 1.0);
                 if (edges.w > 0.0)
-                    a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.w, 0.0, 1.0);
+                    a *= clamp((uv.x / float(w) - texoffset.x) / edges.w, 0.0, 1.0);
+                if (edges.x > 0.0)
+                    a *= clamp((uv.y / float(h) - texoffset.y) / edges.x, 0.0, 1.0);
+                if (edges.y > 0.0)
+                    a *= clamp((1.0 - (uv.x / float(w)) - (1.0 - texoffset.z)) / edges.y, 0.0, 1.0);
+                if (edges.z > 0.0)
+                    a *= clamp((1.0 - (uv.y / float(h)) - (1.0 - texoffset.w)) / edges.z, 0.0, 1.0);
 
                 // blend function with luminance control (for each of the 3 channels)
                 vec3 blend = (a < 0.5) ? (luminance * pow(2.0 * a, exponent))
