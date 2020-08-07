@@ -15,10 +15,11 @@ class CircleJoint : public BaseJoint {
 		void draw();
 		bool hitTest(Vec2 position);
 
-	private:
+    protected:
 		float radius;
 
 		void setDefaultProperties();
+        ofImage circle;
 
 };
 

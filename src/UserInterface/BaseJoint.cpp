@@ -55,9 +55,9 @@ bool BaseJoint::isSelected(){
 }
 
 void BaseJoint::setDefaultColors(){
-	fillColor = ofColor(0, 255, 255, 0);
+    fillColor = ofColor(0, 255, 255, 0);
 	strokeColor = ofColor(255, 255, 255);
-	fillColorSelected = ofColor(255, 255, 0, 0);
+    fillColorSelected = ofColor(255, 255, 0, 255);
 	strokeColorSelected = ofColor(255, 0, 0);
 }
 
