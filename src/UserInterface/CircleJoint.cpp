@@ -5,6 +5,9 @@ namespace piMapper {
 
 CircleJoint::CircleJoint(){
 	setDefaultProperties();
+
+    circle.load("circle-hollow.png");
+    circle_filled.load("circle-filled.png");
 }
 
 void CircleJoint::update(){
@@ -25,49 +28,35 @@ void CircleJoint::draw(){
 	ofEnableAlphaBlending();
 
 	ofPushStyle();
+    ofSetRectMode(OF_RECTMODE_CENTER);
 	ofFill();
 
-	if(selected){
-		ofSetColor(fillColorSelected);
-	}else{
-		ofSetColor(fillColor);
-	}
-
-	#if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
-        if(selected){
-            if(fillColorSelected.a != 0) {
-                ofDrawCircle(position.x, position.y, radius);
-            }
-        } else {
-            if(fillColor.a != 0) {
-                ofDrawCircle(position.x, position.y, radius);
-            }
+    if(selected){
+        ofSetColor(fillColorSelected);
+        if(fillColorSelected.a != 0) {
+            circle_filled.draw(position.x,position.y);
         }
-	#else
-        ofCircle(position.x, position.y, radius);
-	#endif
+    } else {
+        ofSetColor(fillColor);
+        if(fillColor.a != 0) {
+            circle_filled.draw(position.x,position.y);
+        }
+    }
 	ofNoFill();
 
-	if(selected){
-		ofSetColor(strokeColorSelected);
-	}else{
-		ofSetColor(strokeColor);
-	}
-
 	ofSetLineWidth(strokeWidth);
-	#if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
-        if(selected){
-            if(strokeColorSelected.a != 0) {
-                ofDrawCircle(position.x, position.y, radius);
-            }
-        } else {
-            if(strokeColor.a != 0) {
-                ofDrawCircle(position.x, position.y, radius);
-            }
+
+    if(selected){
+        ofSetColor(strokeColorSelected);
+        if(strokeColorSelected.a != 0) {
+            circle.draw(position.x,position.y);
         }
-	#else
-		ofCircle(position.x, position.y, radius);
-	#endif
+    } else {
+        ofSetColor(strokeColor);
+        if(strokeColor.a != 0) {
+            circle.draw(position.x,position.y);
+        }
+    }
 	ofPopStyle();
 }
 

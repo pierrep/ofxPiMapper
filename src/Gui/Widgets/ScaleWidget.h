@@ -33,17 +33,16 @@ class ScaleWidget : public GuiBaseWidget {
 
 	private:
 		ofRectangle _handle;
-	
 		ofPolyline _line;
-
-		float _scale;
-	
-		bool _dragging;
-	
+		float _scale;	
+		bool _dragging;	
 		BaseSurface * _selectedSurface;
 		SurfaceManager * _surfaceManager;
+        ofImage square_hollow;
+        ofImage square_filled;
 	
 		void setRect(ofRectangle rect);
+
 };
 
 } // namespace piMapper
