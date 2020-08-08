@@ -188,7 +188,7 @@ void CircleSurface::drawMaskForSource(ofTexture &sourceTex) {
 	// Set the mesh's texture coords to the quads.
 	// This gets us the coordinates set in the TextureEditor
 	maskMesh.addTexCoords(quadTexCoords);
-	outputFbo.begin(true);
+    outputFbo.begin(OF_FBOMODE_NODEFAULTS);
 	{
 		ofClear(0, 0, 0, 0);
 		ofEnableNormalizedTexCoords();
@@ -238,7 +238,7 @@ void CircleSurface::setupTextures() {
 	float padding = 10;
 
 	maskFbo.allocate(w, h);
-	maskFbo.begin(false);
+    maskFbo.begin(OF_FBOMODE_NODEFAULTS);
 	ofPushStyle();
 	ofSetupScreenOrtho(w, h, -1, 1);
 	ofClear(0, 0, 0, 0);
