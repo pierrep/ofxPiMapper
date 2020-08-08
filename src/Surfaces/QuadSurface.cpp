@@ -328,7 +328,9 @@ namespace piMapper {
 
         setMoved(true);
         std::vector<Vec3> vertices = Vec3::fromOf(mesh.getVertices());
-        ofNotifyEvent(verticesChangedEvent, vertices, this);
+        
+        //Redundant? Causes performance slow-down on RPI
+        //ofNotifyEvent(verticesChangedEvent, vertices, this);
     }
     
 	void QuadSurface::fullScreen(){
@@ -339,6 +341,7 @@ namespace piMapper {
 
 		setMoved(true);
 		std::vector<Vec3> vertices = Vec3::fromOf(mesh.getVertices());
+		
 		ofNotifyEvent(verticesChangedEvent, vertices, this);
 	}    
 
