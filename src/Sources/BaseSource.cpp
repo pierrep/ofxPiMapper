@@ -15,8 +15,6 @@ BaseSource::BaseSource(ofTexture * newTexture){
 	texture = newTexture;
 }
 
-BaseSource::~BaseSource(){}
-
 ofTexture * BaseSource::getTexture(){
 	return texture;
 }
