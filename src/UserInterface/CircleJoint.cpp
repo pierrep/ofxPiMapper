@@ -5,8 +5,6 @@ namespace piMapper {
 
 CircleJoint::CircleJoint(){
 	setDefaultProperties();
-
-    circle.load("circle-hollow.png");
 }
 
 void CircleJoint::update(){
@@ -27,7 +25,6 @@ void CircleJoint::draw(){
 	ofEnableAlphaBlending();
 
 	ofPushStyle();
-    ofSetRectMode(OF_RECTMODE_CENTER);
 	ofFill();
 
 	if(selected){
@@ -39,13 +36,11 @@ void CircleJoint::draw(){
 	#if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
         if(selected){
             if(fillColorSelected.a != 0) {
-                //ofDrawCircle(position.x, position.y, radius);
-                circle.draw(position.x,position.y);
+                ofDrawCircle(position.x, position.y, radius);
             }
         } else {
             if(fillColor.a != 0) {
-                //ofDrawCircle(position.x, position.y, radius);
-                circle.draw(position.x,position.y);
+                ofDrawCircle(position.x, position.y, radius);
             }
         }
 	#else
@@ -63,13 +58,11 @@ void CircleJoint::draw(){
 	#if (OF_VERSION_MAJOR == 0 && OF_VERSION_MINOR >= 9) || OF_VERSION_MAJOR > 0
         if(selected){
             if(strokeColorSelected.a != 0) {
-                //ofDrawCircle(position.x, position.y, radius);
-                circle.draw(position.x,position.y);
+                ofDrawCircle(position.x, position.y, radius);
             }
         } else {
             if(strokeColor.a != 0) {
-                //ofDrawCircle(position.x, position.y, radius);
-                circle.draw(position.x,position.y);
+                ofDrawCircle(position.x, position.y, radius);
             }
         }
 	#else
