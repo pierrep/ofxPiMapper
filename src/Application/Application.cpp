@@ -153,6 +153,10 @@ void Application::onKeyPressed(ofKeyEventArgs & args){
 	 case 'f':
 		 setNextPreset();
 		 break;
+		 
+	 case 'F':
+         setFullscreenSurface();
+         break;		 
 
 	 default:
 		 // All the other keypresses are handled by the application state onKeyPressed
@@ -653,6 +657,13 @@ void Application::toggleLayerPanel(){
 	if(getState() == ProjectionMappingMode::instance()){
 		ProjectionMappingMode::instance()->toggleLayerPanel();
 	}
+}
+
+void Application::setFullscreenSurface(){
+    if(getSurfaceManager()->getSelectedSurface() != 0){
+        getCmdManager()->exec(
+         new FullscreenSurfaceCmd(getSurfaceManager()->getSelectedSurface()));
+    }
 }
 
 } // namespace piMapper
