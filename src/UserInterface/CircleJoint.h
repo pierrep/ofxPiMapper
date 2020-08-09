@@ -17,7 +17,8 @@ class CircleJoint : public BaseJoint {
 
     protected:
 		float radius;
-
+        ofImage circle;
+        ofImage circle_filled;
 		void setDefaultProperties();
 
 };

@@ -8,6 +8,9 @@ namespace ofx {
 namespace piMapper {
 
 ScaleWidget::ScaleWidget(){
+    square_hollow.load("square-hollow.png");
+    square_filled.load("square-filled.png");
+
 	_line.addVertex(ofPoint(0, 0));
 	_line.addVertex(ofPoint(0, 0));
 	
@@ -70,27 +73,26 @@ void ScaleWidget::draw(){
 		_line[1].x = _line[0].x + (_line[1].x - _line[0].x) * scale;
 		_line[1].y = _line[0].y + (_line[1].y - _line[0].y) * scale;
 		
-		_handle.x = _line[1].x - (_handle.width / 2.0f);
-		_handle.y = _line[1].y - (_handle.height / 2.0f);
+        _handle.x = _line[1].x - (_handle.width / 2.0f);
+        _handle.y = _line[1].y - (_handle.height / 2.0f);
 	}
 
 	ofPushStyle();
-
+    ofSetRectMode(OF_RECTMODE_CENTER);
 	ofSetColor(255, 255, 255);
-	ofNoFill();
+    //ofNoFill();
 	
 	ofSetLineWidth(1);
 	_line.draw();
 	
-	ofFill();
-	ofDrawRectangle(
-		_line.getVertices()[0].x - 5,
-		_line.getVertices()[0].y - 5,
-		10, 10);
+    //ofFill();
+    //ofDrawRectangle(_line.getVertices()[0].x - 5, _line.getVertices()[0].y - 5, 10, 10);
+    square_filled.draw(_line.getVertices()[0].x, _line.getVertices()[0].y);
 	
-	ofNoFill();
-	ofSetLineWidth(2);
-	ofDrawRectangle(_handle);
+    //ofNoFill();
+    //ofSetLineWidth(2);
+    //ofDrawRectangle(_handle);
+    square_hollow.draw(_handle.x + (_handle.width / 2.0f),_handle.y + (_handle.height / 2.0f));
 	
 	ofPopStyle();
 }

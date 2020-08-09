@@ -24,6 +24,8 @@ class LayerPanelWidget : public GuiBaseWidget {
 
 	private:
 		SurfaceManager * _sm;
+        ofImage rectangle_filled;
+        ofImage rectangle_hollow;
 	
 };
 
