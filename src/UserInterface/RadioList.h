@@ -1,9 +1,7 @@
 #pragma once
 
-#include "ofGraphics.h"
-#include "ofxGuiGroup.h"
-#include "ofxToggle.h"
-#include "ofxLabel.h"
+#include "ofMain.h"
+#include "RadioButton.h"
 
 namespace ofx {
 namespace piMapper {
@@ -42,10 +40,11 @@ class RadioList {
 		ofEvent <std::string> onRadioSelected;
 
 	private:
+        std::vector<RadioButton *> radioList;
 		std::vector<std::string> storedLabels;
 		std::vector<std::string> storedValues;
 		std::string storedTitle;
-		ofxGuiGroup guiGroup;
+        //ofxGuiGroup guiGroup;
 		int storedSelectedItem;
 
 		void onToggleClicked(bool & toggleValue);
