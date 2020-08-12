@@ -29,17 +29,18 @@ void RadioList::setup(std::vector<std::string> & labels, std::vector<std::string
 	storedValues = values;
 
 	// Create toggles with labels from the labels arg
-//	int i;
-//	for(i = 0; i < labels.size(); i++){
-//		ofxToggle * toggle = new ofxToggle();
+    int i;
+    for(i = 0; i < labels.size(); i++)
+    {
+        RadioButton * toggle = new RadioButton();
 //		toggle->setup(false);
-//		toggle->setName(labels[i]);
+        toggle->setName(labels[i]);
 //		toggle->addListener(this, &RadioList::onToggleClicked);
-//		guiGroup.add(toggle);
+        radioList.push_back(toggle);
 //		#if OF_VERSION_MAJOR == 0 && (OF_VERSION_MINOR >= 8 && OF_VERSION_PATCH >= 2) || (OF_VERSION_MINOR >= 9 && OF_VERSION_PATCH >= 0)
 //			toggle->registerMouseEvents();
 //		#endif
-//	}
+    }
 }
 
 void RadioList::setup(std::string title, std::vector<std::string> & labels, std::vector<std::string> & values){
@@ -51,7 +52,10 @@ void RadioList::setup(std::string title, std::vector<std::string> & labels, std:
 }
 
 void RadioList::draw(){
-    //guiGroup.draw();
+    for(int i = 0; i < radioList.size(); i++)
+    {
+        radioList.at(i)->draw();
+    }
 }
 
 void RadioList::setTitle(std::string title){
@@ -132,13 +136,13 @@ void RadioList::disable(){
 }
 
 void RadioList::clear(){
-//	int i;
-//	for(i = 0; i < guiGroup.getNumControls(); i++){
+    int i;
+    for(i = 0; i < radioList.size(); i++){
 //		ofxToggle * toggle = static_cast <ofxToggle *>(guiGroup.getControl(i));
 //		toggle->removeListener(this, &RadioList::onToggleClicked);
-//		delete toggle;
-//	}
-//	guiGroup.clear();
+        delete radioList.at(i);
+    }
+
 }
 
 void RadioList::unselectAll(){

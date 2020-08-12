@@ -44,7 +44,6 @@ class RadioList {
 		std::vector<std::string> storedLabels;
 		std::vector<std::string> storedValues;
 		std::string storedTitle;
-        //ofxGuiGroup guiGroup;
 		int storedSelectedItem;
 
 		void onToggleClicked(bool & toggleValue);
