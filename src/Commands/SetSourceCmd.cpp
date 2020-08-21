@@ -15,7 +15,7 @@ SetSourceCmd::SetSourceCmd(int sourceType,
 }
 
 void SetSourceCmd::exec(){
-	ofLogNotice("SetSourceCmd", "exec");
+    ofLogVerbose("SetSourceCmd", "exec");
 
 	_oldSourceTypeHelper = _surface->getSource()->getType();
 	if(_surface->getSource()->isLoadable()){
@@ -36,7 +36,7 @@ void SetSourceCmd::exec(){
 }
 
 void SetSourceCmd::undo(){
-	ofLogNotice("SetSourceCmd", "undo");
+    ofLogVerbose("SetSourceCmd", "undo");
 
 	if(_oldSourceTypeHelper == SourceType::SOURCE_TYPE_IMAGE){
 		_sourcesEditor->setImageSource(_oldSourceId);

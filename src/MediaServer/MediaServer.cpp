@@ -133,11 +133,11 @@ BaseSource * MediaServer::loadImage(std::string & path){
 		imageSource->referenceCount++;
 		std::stringstream refss;
 		refss << "Current reference count for " << path << " = " << imageSource->referenceCount;
-		ofLogNotice("MediaServer") << refss.str();
+        ofLogVerbose("MediaServer") << refss.str();
 		// Notify objects registered to onImageLoaded event
 		std::stringstream ss;
 		ss << "Image " << path << " already loaded";
-		ofLogNotice("MediaServer") << ss.str();
+        ofLogVerbose("MediaServer") << ss.str();
 		ofNotifyEvent(onImageLoaded, path, this);
 		return imageSource;
 	}
@@ -149,7 +149,7 @@ BaseSource * MediaServer::loadImage(std::string & path){
 	//referenceCount[path] = 1;
 	std::stringstream refss;
 	refss << "Initialized reference count of " << path << " to " << imageSource->referenceCount;
-	ofLogNotice("MediaServer") << refss.str();
+    ofLogVerbose("MediaServer") << refss.str();
 	// Notify objects registered to onImageLoaded event
 	ofNotifyEvent(onImageLoaded, path, this);
 	return imageSource;
@@ -157,26 +157,26 @@ BaseSource * MediaServer::loadImage(std::string & path){
 
 void MediaServer::unloadImage(std::string & path){
 	ImageSource * source = static_cast <ImageSource *>(getSourceByPath(path));
-	ofLogNotice("MediaServer") << "Unload image, current reference count: " << source->referenceCount;
+    ofLogVerbose("MediaServer") << "Unload image, current reference count: " << source->referenceCount;
 	source->referenceCount--;
 	// Unload only if reference count is less or equal to 0
-	ofLogNotice("MediaServer") << "New reference count: " << source->referenceCount;
+    ofLogVerbose("MediaServer") << "New reference count: " << source->referenceCount;
 	if(source->referenceCount > 0){
-		ofLogNotice("MediaServer") << "Not unloading image as it is being referenced elsewhere";
+        ofLogVerbose("MediaServer") << "Not unloading image as it is being referenced elsewhere";
 		return;
 	}
 	// Reference count 0 or less, unload image
 	std::stringstream ss;
 	ss << "Removing image " << path;
-	ofLogNotice("MediaServer") << ss.str();
+    ofLogVerbose("MediaServer") << ss.str();
 	// Destroy image source
 	if(loadedSources.count(path)){
-		ofLogNotice("MediaServer") << "Source count BEFORE image removal: " << loadedSources.size() << std::endl;
+        ofLogVerbose("MediaServer") << "Source count BEFORE image removal: " << loadedSources.size() << std::endl;
 		loadedSources[path]->clear();
 		map <std::string, BaseSource *>::iterator it = loadedSources.find(path);
 		delete it->second;
 		loadedSources.erase(it);
-		ofLogNotice("MediaServer") << "Source count AFTER image removal: " << loadedSources.size() << std::endl;
+        ofLogVerbose("MediaServer") << "Source count AFTER image removal: " << loadedSources.size() << std::endl;
 		ofNotifyEvent(onImageUnloaded, path, this);
 		return;
 	}
@@ -201,11 +201,11 @@ BaseSource * MediaServer::loadVideo(std::string & path){
 		videoSource->referenceCount++;
 		std::stringstream refss;
 		refss << "Current reference count for " << path << " = " << videoSource->referenceCount;
-		ofLogNotice("MediaServer") << refss.str();
+        ofLogVerbose("MediaServer") << refss.str();
 		// Notify objects registered to onImageLoaded event
 		std::stringstream ss;
 		ss << "Video " << path << " already loaded";
-		ofLogNotice("MediaServer") << ss.str();
+        ofLogVerbose("MediaServer") << ss.str();
 		ofNotifyEvent(onVideoLoaded, path, this);
 		return videoSource;
 	}
@@ -217,7 +217,7 @@ BaseSource * MediaServer::loadVideo(std::string & path){
 	//referenceCount[path] = 1;
 	std::stringstream refss;
 	refss << "Initialized reference count of " << path << " to " << videoSource->referenceCount;
-	ofLogNotice("MediaServer") << refss.str();
+    ofLogVerbose("MediaServer") << refss.str();
 	ofNotifyEvent(onVideoLoaded, path, this);
 	return videoSource;
 }
@@ -229,22 +229,22 @@ void MediaServer::unloadVideo(std::string & path){
 	videoSource->referenceCount--;
 	// Unload only if reference count is less or equal to 0
 	if(videoSource->referenceCount > 0){
-		ofLogNotice("MediaServer") << "Not unloading video as it is being referenced elsewhere";
+        ofLogVerbose("MediaServer") << "Not unloading video as it is being referenced elsewhere";
 		return;
 	}
 	// Reference count 0 or less, let's unload the video
-	ofLogNotice("MediaServer") << "Removing video " << path;
+    ofLogVerbose("MediaServer") << "Removing video " << path;
 	
 	// Distroy video source
 	if(loadedSources.count(path)){
-		ofLogNotice("MediaServer")
+        ofLogVerbose("MediaServer")
 			<< "Source count before video removal: "
 			<< loadedSources.size() << std::endl;
 		videoSource->clear();
 		map <std::string, BaseSource *>::iterator it = loadedSources.find(path);
 		delete it->second;
 		loadedSources.erase(it);
-		ofLogNotice("MediaServer")
+        ofLogVerbose("MediaServer")
 			<< "Source count after video removal: "
 			<< loadedSources.size() << std::endl;
 		ofNotifyEvent(onVideoUnloaded, path, this);
@@ -273,7 +273,7 @@ void MediaServer::unloadMedia(std::string & path){
 			std::exit(EXIT_FAILURE);
 		}
 	}else{
-		ofLogNotice("MediaServer") << "Nothing to unload";
+        ofLogVerbose("MediaServer") << "Nothing to unload";
 	}
 }
 
@@ -327,7 +327,7 @@ void MediaServer::addFboSource(ofx::piMapper::FboSource & fboSource){
 }
 
 void MediaServer::addFboSource(FboSource * fboSource){
-	ofLogNotice("MediaServer") << "Attempting to add FBO source with name " << fboSource->getName();
+    ofLogNotice("MediaServer") << "Attempting to add FBO source with name " << fboSource->getName();
 	
 	// FBO source has to be with unique name
 	for(int i = 0; i < fboSources.size(); ++i){
@@ -338,7 +338,7 @@ void MediaServer::addFboSource(FboSource * fboSource){
 		}
 	}
 	
-	ofLogNotice("MediaServer") << "Source new, adding";
+    ofLogVerbose("MediaServer") << "Source new, adding";
 	fboSources.push_back(fboSource);
     
     // It is important to run the setup of the FBO
@@ -347,7 +347,7 @@ void MediaServer::addFboSource(FboSource * fboSource){
 }
 
 BaseSource * MediaServer::loadFboSource(std::string & fboSourceName){
-	ofLogNotice("MediaServer") << "Attempting to load FBO source with name " << fboSourceName;
+    ofLogNotice("MediaServer") << "Attempting to load FBO source with name " << fboSourceName;
 	// Search for FBO source name in our storage
 	FboSource * source = 0;
 	for(int i = 0; i < fboSources.size(); i++){
@@ -365,7 +365,7 @@ BaseSource * MediaServer::loadFboSource(std::string & fboSourceName){
 	if(loadedSources.count(fboSourceName)){
 		// Is loaded, increase reference count and return existing
 		loadedSources[fboSourceName]->referenceCount++;
-		ofLogNotice("MediaServer") << "Current " << fboSourceName << "reference count: " << loadedSources[fboSourceName]->referenceCount;
+        ofLogVerbose("MediaServer") << "Current " << fboSourceName << "reference count: " << loadedSources[fboSourceName]->referenceCount;
         source->setActive(true);
         return loadedSources[fboSourceName];
 	}
@@ -374,14 +374,14 @@ BaseSource * MediaServer::loadFboSource(std::string & fboSourceName){
 	// source var should be set by now
 	//source->addAppListeners();
 	source->referenceCount = 1;
-	ofLogNotice("MediaServer") << "Current " << fboSourceName << " reference count: " << source->referenceCount;
+    ofLogVerbose("MediaServer") << "Current " << fboSourceName << " reference count: " << source->referenceCount;
 	loadedSources[fboSourceName] = source;
     source->setActive(true);
     return loadedSources[fboSourceName];
 }   // loadFboSource
 
 void MediaServer::unloadFboSource(std::string & fboSourceName){
-	ofLogNotice("MediaServer") << "Attempt to unload FBO source " << fboSourceName;
+    ofLogVerbose("MediaServer") << "Attempt to unload FBO source " << fboSourceName;
 	// Check if loaded at all
 	if(!loadedSources.count(fboSourceName)){
 		ofLogWarning("MediaServer") << "FBO source not loaded";
@@ -392,16 +392,16 @@ void MediaServer::unloadFboSource(std::string & fboSourceName){
 	FboSource * source = static_cast <FboSource *>(loadedSources[fboSourceName]);
 	// else decrease reference count
 	source->referenceCount--;
-	ofLogNotice("MediaServer") << "Current " << fboSourceName << "reference count: " << loadedSources[fboSourceName]->referenceCount;
+    ofLogVerbose("MediaServer") << "Current " << fboSourceName << "reference count: " << loadedSources[fboSourceName]->referenceCount;
 	// If no references left, disable
 	if(source->referenceCount <= 0){
-		ofLogNotice("MediaServer") << fboSourceName << " reference count <= 0, removing from loaded sources";
+        ofLogVerbose("MediaServer") << fboSourceName << " reference count <= 0, removing from loaded sources";
 		source->referenceCount = 0;
         source->setActive(false);
 		//source->removeAppListeners();
 		map <std::string, BaseSource *>::iterator it = loadedSources.find(fboSourceName);
 		loadedSources.erase(it);
-		ofLogNotice("MediaServer") << "Source count after FBO source removal: " << loadedSources.size() << std::endl;
+        ofLogVerbose("MediaServer") << "Source count after FBO source removal: " << loadedSources.size() << std::endl;
 		ofNotifyEvent(onFboSourceUnloaded, fboSourceName, this);
 	}
 }   // unloadFboSource

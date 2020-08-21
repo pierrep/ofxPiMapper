@@ -38,7 +38,6 @@ bool SettingsLoader::load(
 
 	// Count <surfaces> tags.
 	unsigned int numPresets = xmlSettings->getNumTags("surfaces");
-	std::cout << "numPresets: " << numPresets << std::endl;
 
 	// Clear previous presets and surfaces first.
 	surfaceManager.clearPresets();

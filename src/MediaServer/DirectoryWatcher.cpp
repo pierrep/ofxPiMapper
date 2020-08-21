@@ -24,17 +24,23 @@ DirectoryWatcher::DirectoryWatcher(std::string path, int watcherMediaType){
 		exit(EXIT_FAILURE);
 	}
 
-	_directory.listDir(directoryPath);
-	_directory.sort();
+    if(std::filesystem::exists(directoryPath)){
+        _directory.listDir(directoryPath);
+        _directory.sort();
+    }
 
 	for(int i = 0; i < _directory.size(); ++i){
 		_filePaths.push_back(directoryPath + _directory.getName(i));
 
 		ofFile file(directoryPath + _directory.getName(i));
 		if(_mediaType == SourceType::SOURCE_TYPE_VIDEO){
-			file.copyTo("sources/videos/" + _directory.getName(i));
+            if(!ofFile::doesFileExist("sources/videos/" + _directory.getName(i), true))  {
+                file.copyTo("sources/videos/" + _directory.getName(i));
+            }
 		}else if(_mediaType == SourceType::SOURCE_TYPE_IMAGE){
-			file.copyTo("sources/images/" + _directory.getName(i));
+            if(!ofFile::doesFileExist("sources/images/" + _directory.getName(i), true))  {
+                file.copyTo("sources/images/" + _directory.getName(i));
+            }
 		}
 	}
 

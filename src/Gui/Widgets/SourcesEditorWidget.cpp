@@ -42,15 +42,15 @@ void SourcesEditorWidget::createSelectors(){
 	int menuPosX = 20;
 	int distX = 230;
 	if(numImages){
-		imageSelector->setPosition(menuPosX, 20);
+        imageSelector->setInitialPosition(menuPosX, 20);
 		menuPosX += distX;
 	}
 	if(numVideos){
-		videoSelector->setPosition(menuPosX, 20);
+        videoSelector->setInitialPosition(menuPosX, 20);
 		menuPosX += distX;
 	}
 	if(numFbos){
-		fboSelector->setPosition(menuPosX, 20);
+        fboSelector->setInitialPosition(menuPosX, 20);
 	}
 }
 
@@ -156,10 +156,10 @@ void SourcesEditorWidget::selectSourceRadioButton(std::string & sourcePath){
 		if(imageSelector->size()){
 			imageRadioSelected = imageSelector->selectItemByValue(sourcePath);
 		}
-		if(videoSelector->size()){
+        if(videoSelector->size() && !imageRadioSelected){
 			videoRadioSelected = videoSelector->selectItemByValue(sourcePath);
 		}
-		if(fboSelector->size()){
+        if(fboSelector->size() && !imageRadioSelected && !videoRadioSelected){
 			fboRadioSelected = fboSelector->selectItemByValue(sourcePath);
 		}
 		if(imageRadioSelected || videoRadioSelected || fboRadioSelected){
