@@ -8,8 +8,8 @@ namespace ofx {
 namespace piMapper {
 
 ScaleWidget::ScaleWidget(){
-    square_hollow.load("square-hollow.png");
-    square_filled.load("square-filled.png");
+    square_hollow.load("GUI/square-hollow.png");
+    square_filled.load("GUI/square-filled.png");
 
 	_line.addVertex(ofPoint(0, 0));
 	_line.addVertex(ofPoint(0, 0));

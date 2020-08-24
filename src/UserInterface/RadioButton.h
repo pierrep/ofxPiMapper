@@ -23,6 +23,8 @@ class RadioButton {
         void mouseExited(ofMouseEventArgs &){}
         bool setValue(float mx, float my, bool bCheck);
         void draw();
+        void render();
+        void setIcons(ofImage* filled, ofImage* hollow);
 
         bool operator=(bool v);
         ofAbstractParameter & getParameter();
@@ -50,6 +52,8 @@ class RadioButton {
         ofRectangle b;
         ofRectangle checkboxRect;
         int defaultTextPadding;
+        ofImage* square_hollow;
+        ofImage* square_filled;
 
     private:
         unsigned long currentFrame;
