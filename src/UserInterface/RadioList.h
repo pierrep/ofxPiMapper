@@ -41,6 +41,8 @@ class RadioList {
         int defaultHeight;
         int defaultSpacing;
         ofRectangle b;
+        ofImage square_hollow;
+        ofImage square_filled;
 
 		void onToggleClicked(bool & toggleValue);
 

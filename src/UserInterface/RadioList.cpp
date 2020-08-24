@@ -13,6 +13,8 @@ RadioList::RadioList(){
     b.y = 0;
     b.width = defaultWidth;
     b.height = 0;
+    square_hollow.load("GUI/circle-hollow.png");
+    square_filled.load("GUI/circle-filled.png");
 }
 
 RadioList::~RadioList(){
@@ -33,6 +35,7 @@ void RadioList::setup(std::string title, std::vector<std::string> & labels, std:
     {
         RadioButton * toggle = new RadioButton();
         toggle->setup(labels[i],false,defaultWidth, defaultHeight);
+        toggle->setIcons(&square_filled,&square_hollow);
         toggle->setPosition(b.x, b.y + b.height  + defaultSpacing);
         b.height += toggle->getHeight() + defaultSpacing;
         toggle->addListener(this, &RadioList::onToggleClicked);

@@ -5,8 +5,8 @@ namespace piMapper{
 
 LayerPanelWidget::LayerPanelWidget(){
 	_sm = 0;
-    rectangle_filled.load("rectangle-filled.png");
-    rectangle_hollow.load("rectangle-hollow.png");
+    rectangle_filled.load("GUI/rectangle-filled.png");
+    rectangle_hollow.load("GUI/rectangle-hollow.png");
 }
 
 void LayerPanelWidget::draw(){

@@ -6,8 +6,8 @@ namespace piMapper {
 CircleJoint::CircleJoint(){
 	setDefaultProperties();
 
-    circle.load("circle-hollow.png");
-    circle_filled.load("circle-filled.png");
+    circle.load("GUI/circle-hollow.png");
+    circle_filled.load("GUI/circle-filled.png");
 }
 
 void CircleJoint::update(){
