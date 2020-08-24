@@ -6,7 +6,7 @@ namespace piMapper {
 RadioList::RadioList(){
 	storedTitle = "";
 	storedSelectedItem = 0;
-    defaultWidth = 200;
+    defaultWidth = 240;
     defaultHeight = 18;
     defaultSpacing = 1;
     b.x = 0;
@@ -32,8 +32,7 @@ void RadioList::setup(std::string title, std::vector<std::string> & labels, std:
     for(unsigned int i = 0; i < labels.size(); i++)
     {
         RadioButton * toggle = new RadioButton();
-        toggle->setup(false,defaultWidth, defaultHeight);
-        toggle->setName(labels[i]);
+        toggle->setup(labels[i],false,defaultWidth, defaultHeight);
         toggle->setPosition(b.x, b.y + b.height  + defaultSpacing);
         b.height += toggle->getHeight() + defaultSpacing;
         toggle->addListener(this, &RadioList::onToggleClicked);
@@ -46,7 +45,7 @@ void RadioList::setup(std::string title, std::vector<std::string> & labels, std:
 }
 
 void RadioList::draw(){
-    for(int i = 0; i < radioList.size(); i++)
+    for(unsigned int i = 0; i < radioList.size(); i++)
     {
         radioList.at(i)->draw();
     }
@@ -92,20 +91,17 @@ bool RadioList::selectItemByValue(std::string itemValue){
 		return false;
 	}
 	unselectAll();
-	int itemIndex = -1;
+
     for(unsigned int i = 0; i < storedValues.size(); i++){
 		if(itemValue == storedValues[i]){
-			itemIndex = i;
-			break;
+            radioList[i]->removeListener(this, &RadioList::onToggleClicked);
+            *(radioList[i]) = true;          // Select the specific radio button
+            radioList[i]->addListener(this, &RadioList::onToggleClicked);
+            return true;
 		}
 	}
-	if(itemIndex >= 0){
-        radioList[itemIndex]->removeListener(this, &RadioList::onToggleClicked);
-        *(radioList[itemIndex]) = true;          // Select the specific radio button
-        radioList[itemIndex]->addListener(this, &RadioList::onToggleClicked);
-		return true;
-	}
-    ofLogNotice("RadioList") << "Item with value " << itemValue << " not found";
+
+    ofLogWarning("RadioList") << "Item with value " << itemValue << " not found";
 	return false;
 }
 
@@ -151,18 +147,8 @@ ofPoint RadioList::getPosition(){
     return ofPoint(b.x,b.y);
 }
 
-float RadioList::getWidth(){
-
-    return b.width;
-}
-
-float RadioList::getHeight(){
-
-    return b.height;
-}
-
 int RadioList::size(){
-	return storedValues.size();
+    return storedValues.size();
 }
 
 void RadioList::onToggleClicked(bool & toggleValue){

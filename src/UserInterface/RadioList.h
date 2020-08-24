@@ -22,15 +22,13 @@ class RadioList {
 		void clear();
 		void unselectAll();
 		ofPoint getPosition();
-		float getWidth();
-		float getHeight();
-		int size();
+        int size();
 
 		// This event notifies about a toggle being selected and passes it's name to
 		// the listeners.
 		// Use ofAddListener(RadioListInstance.radioSelectedEvent, listenerClassPtr,
 		// &listenerClass::listenerMethod)
-		// to listen to this. Listner method void listenerMethod(std::string & radioName)
+        // to listen to this. Listener method void listenerMethod(std::string & radioName)
 		ofEvent <std::string> onRadioSelected;
 
 	private:

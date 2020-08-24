@@ -9,9 +9,7 @@ class RadioButton {
 		RadioButton();
         ~RadioButton();
 
-        void setup(bool value, float width, float height);
-        //void setup(const std::string& toggleName, bool value, float width, float height);
-        void setName(string name);
+        void setup(const string& toggleName, bool value, float width, float height);
         void setPosition(ofPoint p);
         void setPosition(float x, float y);
         ofPoint getPosition() const;

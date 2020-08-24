@@ -9,7 +9,6 @@ RadioButton::~RadioButton(){
 
 RadioButton::RadioButton(){
     defaultTextPadding = 4;
-
 }
 
 bool RadioButton::isGuiDrawing(){
@@ -20,8 +19,9 @@ bool RadioButton::isGuiDrawing(){
     }
 }
 
-void RadioButton::setup(bool _value, float width, float height)
+void RadioButton::setup(const string& _name, bool _value, float width, float height)
 {
+    name = _name;
     b.x = 0;
     b.y = 0;
     b.width = width;
@@ -31,11 +31,6 @@ void RadioButton::setup(bool _value, float width, float height)
     checkboxRect.set(1, 1, b.height - 2, b.height - 2);
     ofRegisterMouseEvents(this);
     return;
-}
-
-void RadioButton::setName(string _name)
-{
-    name = _name;
 }
 
 void RadioButton::setPosition(ofPoint p)
@@ -126,7 +121,7 @@ void RadioButton::draw()
     currentFrame = ofGetFrameNum();
 
     ofPushStyle();
-    ofSetColor(255,0,255);
+    ofSetColor(128,128,128);
     ofDrawRectangle(b);
 
     if( value ){
@@ -137,7 +132,7 @@ void RadioButton::draw()
     ofDrawRectangle(b.getPosition()+checkboxRect.getTopLeft(),checkboxRect.width,checkboxRect.height);
 
     float textX = b.x + defaultTextPadding + checkboxRect.width;
-    float textY = b.getCenter().y;
+    float textY = b.getCenter().y + 2;
     ofDrawBitmapString(name,textX,textY);
 
     ofPopStyle();

@@ -40,7 +40,7 @@ void SourcesEditorWidget::createSelectors(){
 
 	// Align menus
 	int menuPosX = 20;
-	int distX = 230;
+    int distX = 250;
 	if(numImages){
         imageSelector->setInitialPosition(menuPosX, 20);
 		menuPosX += distX;
