@@ -61,34 +61,12 @@ void BaseSurface::drawTexture(Vec3 position){
 		return;
 	}
 
-	// TODO: Do not recreate this in each draw loop
-	//ofMesh texMesh;
-	
-	//// Add vertices to the mesh
-	//texMesh.addVertex(position.toOf());
-	//Vec3 topRight(source->getTexture()->getWidth(), 0.0f, 0.0f);
-	//texMesh.addVertex((position + topRight).toOf());
-	//Vec3 bottomRight(source->getTexture()->getWidth(), source->getTexture()->getHeight(), 0.0f);
-	//texMesh.addVertex((position + bottomRight).toOf());
-	//Vec3 bottomLeft(0.0f, source->getTexture()->getHeight(), 0.0f);
-	//texMesh.addVertex((position + bottomLeft).toOf());
-	
-	//// Make triangles out of added vertices
-	//texMesh.addTriangle(0, 2, 3);
-	//texMesh.addTriangle(0, 1, 2);
-	
-	//// Add texture coordinates for the added vertices
-	//texMesh.addTexCoord(Vec2(0.0f, 0.0f).toOf());
-	//texMesh.addTexCoord(Vec2(1.0f, 0.0f).toOf());
-	//texMesh.addTexCoord(Vec2(1.0f, 1.0f).toOf());
-	//texMesh.addTexCoord(Vec2(0.0f, 1.0f).toOf());
-	
-	//// Draw mesh
-	//source->getTexture()->bind();
-	//texMesh.draw();
-	//source->getTexture()->unbind();
-
+    bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
+    ofDisableNormalizedTexCoords();
     source->getTexture()->draw(position.toOf(),source->getTexture()->getWidth(),source->getTexture()->getHeight());
+    if(normalizedTexCoords) {
+        ofEnableNormalizedTexCoords();
+    }
 }
 
 void BaseSurface::setSource(BaseSource * newSource){

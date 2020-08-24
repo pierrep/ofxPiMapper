@@ -258,16 +258,10 @@ void TextureMappingMode::onMouseDragged(Application * app, ofMouseEventArgs & ar
 }
 
 void TextureMappingMode::drawTexture(Application * app){
-	if(app->getSurfaceManager()->getSelectedSurface() != 0){
-		bool normalizedTexCoords = ofGetUsingNormalizedTexCoords();
-		ofEnableNormalizedTexCoords();
-
+    if(app->getSurfaceManager()->getSelectedSurface() != 0)
+    {
 		ofSetColor(255, 255, 255, 255);
 		app->getSurfaceManager()->getSelectedSurface()->drawTexture(Vec3(0.0f, 0.0f, 0.0f));
-
-		if(!normalizedTexCoords){
-			ofDisableNormalizedTexCoords();
-		}
 	}
 }
 
