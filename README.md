@@ -6,6 +6,8 @@
 
 A number of features are being added as branches to this repository, including a GLES2 implementation of the original ofxPiMapper project. Compatibility is being maintained with the GLES1 code path.
 
+The ofxGUI dependency has been removed and replaced with a custom solution.
+
 Development in this fork is generously supported by:
 
 [SEHNERV.org](https://sehnerv.org) - Verein zur Förderung von Medienkunst 
