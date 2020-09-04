@@ -56,13 +56,15 @@ class QuadSurface : public BaseSurface {
         void updateVertexBuffer();
         void calculateQ();
 
-		float _matrix[16];
-		bool _perspectiveWarping;
+	float _matrix[16];
+	bool _perspectiveWarping;
         bool _edgeBlending;
-		ofMesh _meshCache;
+	ofMesh _meshCache;
         ofShader shader;
+	ofShader shader_blend;
         string glESVertexShader;
         string glESFragmentShader;
+	string glESFragmentShaderBlend;
         string gl3VertexShader;
         string gl3FragmentShader;
         string gl2FragmentShader;
