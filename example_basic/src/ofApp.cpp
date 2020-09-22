@@ -1,12 +1,7 @@
 #include "ofApp.h"
-#include <gperftools/profiler.h>
-
-bool doProf = false;
 
 void ofApp::setup(){
 	ofBackground(0);
-	//~ ofSetVerticalSync(false);
-	//~ ofSetFrameRate(30);
 	mapper.setup();
 
     #ifdef TARGET_RASPBERRY_PI
@@ -24,18 +19,7 @@ void ofApp::draw(){
 }
 
 void ofApp::keyPressed(int key){
-	if(key == '5') {
-		if(doProf == false) {
-			ProfilerStart("app.prof");
-			doProf = true;
-		}
-		else {
-			ProfilerStop();	
-			doProf = false;
-		}
-	}
 	mapper.keyPressed(key);
-	
 }
 
 void ofApp::keyReleased(int key){
