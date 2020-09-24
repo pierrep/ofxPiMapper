@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "BaseSource.h"
+#include "ofxVideoSync.h"
 
 #ifdef TARGET_RASPBERRY_PI
  #include "ofxOMXPlayer.h"
@@ -36,7 +37,7 @@ class VideoSource : public BaseSource {
 		#ifdef TARGET_RASPBERRY_PI
 			ofxVideoSyncReceiver * _omxPlayer;
 		#else
-			unique_ptr<ofVideoPlayer> _videoPlayer;
+            unique_ptr<ofxVideoSync> _videoPlayer;
 			bool _initialVolumeSet;
 		#endif
 	

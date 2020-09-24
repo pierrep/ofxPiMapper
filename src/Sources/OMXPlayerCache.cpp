@@ -18,7 +18,7 @@ OMXPlayerCache * OMXPlayerCache::instance(){
 	return _instance;
 }
 
-ofxVideoSyncReceiver * OMXPlayerCache::load(std::string moviePath){
+ofxVideoSync * OMXPlayerCache::load(std::string moviePath){
 	if(_players.find(moviePath) == _players.end()){
 		ofxOMXPlayerSettings settings;
 		settings.videoPath = moviePath;
@@ -27,7 +27,7 @@ ofxVideoSyncReceiver * OMXPlayerCache::load(std::string moviePath){
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
 		
-		ofxVideoSyncReceiver * p = new ofxVideoSyncReceiver();
+        ofxVideoSync * p = new ofxVideoSyncReceiver();
 		p->getVideoPlayerPtr()->setup(settings);
 		_players[moviePath] = p;
 		

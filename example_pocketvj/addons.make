@@ -1,4 +1,5 @@
-ofxGui
 ofxPiMapper
 ofxXmlSettings
 ofxOMXPlayer
+ofxVideoSync
+ofxOsc

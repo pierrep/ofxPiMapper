@@ -2,3 +2,4 @@ ofxPiMapper
 ofxXmlSettings
 ofxOMXPlayer
 ofxVideoSync
+ofxOsc

@@ -60,6 +60,10 @@ local.properties
 *.tags
 *.workspace.*
 
+# QtCreator
+*.qbs
+*.qbs.user
+
 #########################
 # operating system
 #########################

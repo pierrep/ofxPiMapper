@@ -28,7 +28,8 @@ void VideoSource::loadVideo(std::string & filePath){
 		_omxPlayer = OMXPlayerCache::instance()->load(filePath);
 		texture = &(_omxPlayer->getVideoPlayerPtr()->getTextureReference());
 	#else
-		_videoPlayer = make_unique<ofVideoPlayer>();
+        _videoPlayer = make_unique<ofxVideoSync>();
+        _videoPlayer->setType(SyncType::SYNC_RECEIVER);
 		_videoPlayer->load(filePath);
 		_videoPlayer->setLoopState(OF_LOOP_NORMAL);
 		_videoPlayer->play();
@@ -73,7 +74,7 @@ void VideoSource::togglePause(){
     #ifdef TARGET_RASPBERRY_PI
         _omxPlayer->getVideoPlayerPtr()->togglePause();
     #else
-        _videoPlayer->setPaused(!_videoPlayer->isPaused());
+        _videoPlayer->setPaused(!_videoPlayer->getVideoPlayerPtr()->isPaused());
     #endif
 }
 
@@ -89,7 +90,7 @@ void VideoSource::stop(){
 	void VideoSource::update(ofEventArgs & args){
 		if(_videoPlayer != 0){
 			if(!_initialVolumeSet){
-				if(_videoPlayer->isInitialized()){
+                if(_videoPlayer->getVideoPlayerPtr()->isInitialized()){
 					_videoPlayer->setVolume(VideoSource::enableAudio ? 1.0f : 0.0f);
 					_initialVolumeSet = true;
 				}

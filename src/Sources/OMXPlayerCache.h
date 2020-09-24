@@ -5,7 +5,7 @@
 #include "ofMain.h"
 
 class ofxOMXPlayer;
-class ofxVideoSyncReceiver;
+class ofxVideoSync;
 
 namespace ofx {
 namespace piMapper {
@@ -14,12 +14,12 @@ class OMXPlayerCache {
 
 	public:
 		static OMXPlayerCache * instance();
-		ofxVideoSyncReceiver * load(std::string moviePath);
+        ofxVideoSync * load(std::string moviePath);
 		void unload(std::string moviePath);
 
 	private:
 		static OMXPlayerCache * _instance;
-		map <std::string, ofxVideoSyncReceiver *> _players;
+        map <std::string, ofxVideoSync *> _players;
 
 };
 
