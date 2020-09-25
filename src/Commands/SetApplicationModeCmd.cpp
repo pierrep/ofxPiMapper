@@ -24,8 +24,11 @@ void SetApplicationModeCmd::exec(){
 	
 	if(_applicationState != PresentationMode::instance()){
 		ofShowCursor();
+		ofSetVerticalSync(true);
 	}else{
 		ofHideCursor();
+		ofSetVerticalSync(false);
+		ofSetFrameRate(30);
 	}
 	
 	if(_applicationState == SourceSelectionMode::instance()){
@@ -45,8 +48,11 @@ void SetApplicationModeCmd::undo(){
 	
 	if(_prevApplicationState != PresentationMode::instance()){
 		ofShowCursor();
+		ofSetVerticalSync(true);
 	}else{
 		ofHideCursor();
+		ofSetVerticalSync(false);
+		ofSetFrameRate(30);
 	}
 	
 	if(_prevApplicationState == SourceSelectionMode::instance()){
