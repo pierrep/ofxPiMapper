@@ -35,7 +35,7 @@ class VideoSource : public BaseSource {
 	private:
 
 		#ifdef TARGET_RASPBERRY_PI
-			ofxVideoSyncReceiver * _omxPlayer;
+			ofxVideoSync * _omxPlayer;
 		#else
             unique_ptr<ofxVideoSync> _videoPlayer;
 			bool _initialVolumeSet;

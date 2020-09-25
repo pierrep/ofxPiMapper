@@ -27,16 +27,10 @@ ofxVideoSync * OMXPlayerCache::load(std::string moviePath){
 		settings.enableLooping = true;
 		settings.enableAudio = VideoSource::enableAudio;
 		
-        ofxVideoSync * p = new ofxVideoSyncReceiver();
-		p->getVideoPlayerPtr()->setup(settings);
-		_players[moviePath] = p;
-		
-		bool bReceiver = true;
-		if(bReceiver) {
-			p->setup();
-		} else {
-			p->setup();
-		}
+        ofxVideoSync * p = new ofxVideoSync();
+        p->setPlayerSettings(settings);
+		p->load(moviePath);
+		_players[moviePath] = p;		
 		
 		return p;
 	}
@@ -47,7 +41,7 @@ ofxVideoSync * OMXPlayerCache::load(std::string moviePath){
 
 void OMXPlayerCache::unload(std::string moviePath){
 	if(_players.find(moviePath) != _players.end()){
-		_players[moviePath]->getVideoPlayerPtr()->setPaused(true);
+		_players[moviePath]->setPaused(true);
 	}
 }
 

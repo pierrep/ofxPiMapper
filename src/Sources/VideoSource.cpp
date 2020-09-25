@@ -26,7 +26,7 @@ void VideoSource::loadVideo(std::string & filePath){
 	
 	#ifdef TARGET_RASPBERRY_PI
 		_omxPlayer = OMXPlayerCache::instance()->load(filePath);
-		texture = &(_omxPlayer->getVideoPlayerPtr()->getTextureReference());
+		texture = &(_omxPlayer->getTexture());
 	#else
         _videoPlayer = make_unique<ofxVideoSync>();
         _videoPlayer->setType(SyncType::SYNC_RECEIVER);
@@ -72,15 +72,15 @@ void VideoSource::clear(){
 
 void VideoSource::togglePause(){
     #ifdef TARGET_RASPBERRY_PI
-        _omxPlayer->getVideoPlayerPtr()->togglePause();
+        _omxPlayer->togglePause();
     #else
-        _videoPlayer->setPaused(!_videoPlayer->getVideoPlayerPtr()->isPaused());
+        _videoPlayer->togglePause();
     #endif
 }
 
 void VideoSource::stop(){
 	#ifdef TARGET_RASPBERRY_PI
-        _omxPlayer->getVideoPlayerPtr()->setPaused(true);
+        _omxPlayer->setPaused(true);
     #else
         _videoPlayer->setPaused(true);
     #endif
@@ -105,7 +105,7 @@ void VideoSource::stop(){
 		}
 		if(!_loop && _omxPlayer != 0){
 			if(_omxPlayer->getVideoPlayerPtr()->getCurrentFrame() >= _omxPlayer->getVideoPlayerPtr()->getTotalNumFrames() - 1){
-				_omxPlayer->getVideoPlayerPtr()->setPaused(true);
+				_omxPlayer->setPaused(true);
 			}
 		}
 	}
