@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<settings>
+	<sync_type>Receiver</sync_type>
+	<sync_tolerance>0.05</sync_tolerance>
+</settings>

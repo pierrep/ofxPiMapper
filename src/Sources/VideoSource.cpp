@@ -29,7 +29,6 @@ void VideoSource::loadVideo(std::string & filePath){
 		texture = &(_omxPlayer->getTexture());
 	#else
         _videoPlayer = make_unique<ofxVideoSync>();
-        _videoPlayer->setType(SyncType::SYNC_RECEIVER);
 		_videoPlayer->load(filePath);
 		_videoPlayer->setLoopState(OF_LOOP_NORMAL);
 		_videoPlayer->play();
