@@ -112,12 +112,20 @@ void VideoSource::stop(){
 
 void VideoSource::enableVideoSync()
 {
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->enabledSync
+#else
     _videoPlayer->enableSync();
+#endif
 }
 
 void VideoSource::disableVideoSync()
 {
+#ifdef TARGET_RASPBERRY_PI
+    _omxPlayer->disableSync();
+#else
     _videoPlayer->disableSync();
+#endif
 }
 
 } // namespace piMapper
