@@ -31,6 +31,8 @@ class VideoSource : public BaseSource {
         void togglePause();
         void stop();
 		void update(ofEventArgs & args);
+        void disableVideoSync();
+        void enableVideoSync();
 
 	private:
 

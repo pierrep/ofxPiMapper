@@ -110,5 +110,15 @@ void VideoSource::stop(){
 	}
 #endif
 
+void VideoSource::enableVideoSync()
+{
+    //_videoPlayer
+}
+
+void VideoSource::disableVideoSync()
+{
+
+}
+
 } // namespace piMapper
 } // namespace ofx
