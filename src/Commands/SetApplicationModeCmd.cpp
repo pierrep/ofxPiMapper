@@ -64,10 +64,27 @@ void SetApplicationModeCmd::undo(){
 	
 	if(_prevApplicationState != PresentationMode::instance()){
 		ofShowCursor();
-		ofSetVerticalSync(true);	}else{
+        ofSetVerticalSync(true);
+        for(unsigned int i = 0; i <_application->getSurfaceManager()->getActivePreset()->getSurfaces().size();i++) {
+            if(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource()->getType() == SourceType::SOURCE_TYPE_VIDEO)
+            {
+                VideoSource* video = dynamic_cast<VideoSource*>(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource());
+                video->disableVideoSync();
+                ofLogNotice() << "Not Presentation mode, don't use video sync";
+            }
+        }
+    }else{
 		ofHideCursor();
 		ofSetVerticalSync(false);
 		ofSetFrameRate(30);
+        for(unsigned int i = 0; i <_application->getSurfaceManager()->getActivePreset()->getSurfaces().size();i++) {
+            if(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource()->getType() == SourceType::SOURCE_TYPE_VIDEO)
+            {
+                VideoSource* video = dynamic_cast<VideoSource*>(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource());
+                video->enableVideoSync();
+                ofLogNotice() << "Presentation mode, use video sync";
+            }
+        }
 	}
 	
 	if(_prevApplicationState == SourceSelectionMode::instance()){
