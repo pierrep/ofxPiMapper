@@ -112,12 +112,12 @@ void VideoSource::stop(){
 
 void VideoSource::enableVideoSync()
 {
-    //_videoPlayer
+    _videoPlayer->enableSync();
 }
 
 void VideoSource::disableVideoSync()
 {
-
+    _videoPlayer->disableSync();
 }
 
 } // namespace piMapper
