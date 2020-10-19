@@ -238,8 +238,12 @@ void ofxPiMapper::setInfoText(std::string text){
 	_application.setInfoText(text);
 }
 
-void ofxPiMapper::toggleInfo(){
-	_application.toggleInfo();
+void ofxPiMapper::toggleInstructions(){
+    _application.toggleInstructions();
+}
+
+void ofxPiMapper::toggleFPS(){
+    _application.toggleFPS();
 }
 
 void ofxPiMapper::undo(){

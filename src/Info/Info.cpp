@@ -4,8 +4,9 @@ namespace ofx {
 namespace piMapper {
 
 Info::Info(){
-	_visible = false;
-	_text = "There are 4 modes:\n\n"
+    _show_instructions = false;
+    _show_fps = false;
+    _text = "There are 4 modes:\n\n"
 		" 1. Presentation mode\n"
 		" 2. Texture mapping mode\n"
 		"  - Press \"<\" and \">\" to select previous or next vertex\n"
@@ -40,15 +41,25 @@ Info::Info(){
 }
 
 void Info::draw(){
-	if(_visible){
-		ofDrawBitmapStringHighlight(_text, 10, 20,
+    if(_show_instructions){
+        ofDrawBitmapStringHighlight(_text, 20, 20,
 									ofColor(0, 0, 0, 100),
 									ofColor(255, 255, 255, 200));
 	}
+    if(_show_fps){
+            string fps = "FPS: "+ofToString(ofGetFrameRate());
+            ofDrawBitmapStringHighlight(fps, 20, ofGetHeight() - 20,
+                                        ofColor(0, 0, 0, 100),
+                                        ofColor(255, 255, 255, 200));
+    }
 }
 
-void Info::toggle(){
-	_visible = !_visible;
+void Info::toggle_instructions(){
+    _show_instructions = !_show_instructions;
+}
+
+void Info::toggle_fps(){
+    _show_fps = !_show_fps;
 }
 
 void Info::setText(std::string text){

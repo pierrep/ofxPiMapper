@@ -139,8 +139,12 @@ void Application::onKeyPressed(ofKeyEventArgs & args){
 		 break;
 
 	 case 'i':
-		 toggleInfo();
+         toggleInstructions();
 		 break;
+
+     case '`':
+        toggleFPS();
+        break;
 
 	 case 's':
 		 saveProject();
@@ -228,8 +232,12 @@ void Application::setInfoText(std::string text){
 	_info.setText(text);
 }
 
-void Application::toggleInfo(){
-	_info.toggle();
+void Application::toggleInstructions(){
+    _info.toggle_instructions();
+}
+
+void Application::toggleFPS(){
+    _info.toggle_fps();
 }
 
 void Application::togglePerspective(){

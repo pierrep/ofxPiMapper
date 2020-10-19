@@ -93,7 +93,8 @@ class Application {
 		void createSurface(SurfaceType type);
 		void eraseSurface(int i);
 		void setInfoText(std::string text);
-		void toggleInfo();
+        void toggleInstructions();
+        void toggleFPS();
 		void togglePerspective();
 		void saveProject();
 		bool loadXmlSettings(std::string fileName);

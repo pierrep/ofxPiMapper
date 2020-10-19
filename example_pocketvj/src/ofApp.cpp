@@ -31,7 +31,9 @@ void ofApp::keyPressed(int key){
 	}else if(key == '4'){
 		mapper.setMode(ofx::piMapper::SOURCE_MODE);
 	}else if(key == 'c'){
-		mapper.toggleInfo();
+        mapper.toggleInstructions();
+    }else if(key == 'f'){
+                mapper.toggleFPS();
 	}else if(key == 't'){
 		mapper.createSurface(ofx::piMapper::TRIANGLE_SURFACE);
 	}else if(key == 'q'){

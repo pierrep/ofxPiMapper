@@ -29,7 +29,8 @@ class ofxPiMapper {
 
 		// Application
 		void setInfoText(std::string text);
-		void toggleInfo();
+        void toggleInstructions();
+        void toggleFPS();
 		void undo();
 		void deselect();
 		bool toggleShift();

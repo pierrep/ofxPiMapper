@@ -10,11 +10,13 @@ class Info {
 		Info();
 	
 		void draw();
-		void toggle();
+        void toggle_instructions();
+        void toggle_fps();
 		void setText(std::string text);
 	
 	private:
-		bool _visible;
+        bool _show_instructions;
+        bool _show_fps;
 		std::string _text;
 };
 
