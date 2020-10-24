@@ -35,8 +35,10 @@ void SetApplicationModeCmd::exec(){
         }
 	}else{
 		ofHideCursor();
+        #ifdef TARGET_RASPBERRY_PI
 		ofSetVerticalSync(false);
 		ofSetFrameRate(30);
+        #endif
         for(unsigned int i = 0; i <_application->getSurfaceManager()->getActivePreset()->getSurfaces().size();i++) {
             if(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource()->getType() == SourceType::SOURCE_TYPE_VIDEO)
             {
@@ -75,8 +77,10 @@ void SetApplicationModeCmd::undo(){
         }
     }else{
 		ofHideCursor();
+        #ifdef TARGET_RASPBERRY_PI
 		ofSetVerticalSync(false);
 		ofSetFrameRate(30);
+        #endif
         for(unsigned int i = 0; i <_application->getSurfaceManager()->getActivePreset()->getSurfaces().size();i++) {
             if(_application->getSurfaceManager()->getActivePreset()->getSurfaces().at(i)->getSource()->getType() == SourceType::SOURCE_TYPE_VIDEO)
             {
