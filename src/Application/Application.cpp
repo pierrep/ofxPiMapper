@@ -7,10 +7,7 @@ namespace piMapper {
 Application::Application(){
 	_keySequence = "";
 	_surfaceManager.setMediaServer(&_mediaServer);
-
-	// Set initial mode
 	setState(PresentationMode::instance());
-	ofHideCursor();
 
 #ifdef TARGET_RASPBERRY_PI
         ofDisableArbTex();
@@ -55,6 +52,10 @@ void Application::setup(){
 
 	// TODO: Consider whether this is the right place for it
 	Gui::instance()->getScaleWidget().setSurfaceManager(&_surfaceManager);
+
+    //Explicitly set presentation mode to enable video sync
+    setPresentationMode();
+
 }
 
 void Application::update(){
