@@ -14,6 +14,7 @@ Features currently not in upstream ofxPiMapper:
 - edge blending (via shaders)
 - video playback synchronisation (using ofxVideoSync, works on multiple RPI's connected via LAN), this requires my custom [branch](https://github.com/pierrep/ofxOMXPlayer/tree/SeekingFix) of ofxOMXPlayer
 - A texture based GUI which renders much faster than the current drawn one on GLES 2, and is probably faster on GLES1 too.
+~~- Ability to force a quad to go full screen~~ (this has been upstreamed)
 
 Development in this fork is generously supported by:
 
