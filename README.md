@@ -4,9 +4,16 @@
 
 ## Notes on this fork
 
-A number of features are being added as branches to this repository, including a GLES2 implementation of the original ofxPiMapper project. Compatibility is being maintained with the GLES1 code path.
+A number of features are being added as branches to this repository, most significantly a GLES2 implementation of the original ofxPiMapper project. Compatibility is being maintained with the GLES1 code path. The motivation for this was originally to support edge blending (via shaders), but this also opens up the possibility of using shaders in general.
 
-The ofxGUI dependency has been removed and replaced with a custom solution.
+The ofxGUI dependency has been removed and replaced with a custom solution in the GLES2 mode, largely because of this bug - https://github.com/openframeworks/openFrameworks/issues/6594
+
+Features currently not in upstream ofxPiMapper:
+
+- GLES2 renderer
+- edge blending (via shaders)
+- video playback synchronisation (using ofxVideoSync, works on multiple RPI's connected via LAN), this requires my custom [branch](https://github.com/pierrep/ofxOMXPlayer/tree/SeekingFix) of ofxOMXPlayer
+- A texture based GUI which renders much faster than the current drawn one on GLES 2, and is probably faster on GLES1 too.
 
 Development in this fork is generously supported by:
 
